@@ -20,6 +20,7 @@ import { theme } from "./theme";
 import { recordingSvg, startSvg, historySvg } from "./icons";
 import { formatDuration } from "./dom";
 import { showReplayModal } from "./replayModal";
+import { t } from "../i18n";
 
 const MAX_RECORDING_DURATION_MS = 3 * 60 * 1000;
 
@@ -90,7 +91,7 @@ export function createRecordFab(): HTMLElement | null {
       }
       /* 子按钮 tooltip,样式与主按钮 tooltip 完全一致 */
       #${ID_HISTORY}::after {
-        content: "上传最近60s数据";
+        content: "${t("fabUploadRecent")}";
         position: absolute;
         right: calc(100% + 12px);
         top: 50%;
@@ -286,11 +287,11 @@ export function createRecordFab(): HTMLElement | null {
   const confirmPopover = document.createElement("div");
   confirmPopover.id = "rrweb-fab-confirm";
   confirmPopover.innerHTML = `
-    <div class="rrweb-confirm-title">提交录制</div>
-    <div class="rrweb-confirm-desc">是否提交本次录制信息？</div>
+    <div class="rrweb-confirm-title">${t("confirmTitle")}</div>
+    <div class="rrweb-confirm-desc">${t("confirmDesc")}</div>
     <div class="rrweb-confirm-btns">
-      <button class="rrweb-confirm-btn" id="rrweb-confirm-cancel">取消</button>
-      <button class="rrweb-confirm-btn rrweb-confirm-btn-primary" id="rrweb-confirm-ok">确认</button>
+      <button class="rrweb-confirm-btn" id="rrweb-confirm-cancel">${t("confirmCancel")}</button>
+      <button class="rrweb-confirm-btn rrweb-confirm-btn-primary" id="rrweb-confirm-ok">${t("confirmOk")}</button>
     </div>
   `;
 
@@ -391,7 +392,7 @@ export function createRecordFab(): HTMLElement | null {
     if (result) {
       showReplayModal(result.url);
     } else {
-      console.warn("录制已结束但未保存");
+      console.warn(t("logEndedNotSaved"));
     }
 
     isUploading = false;
@@ -434,7 +435,7 @@ export function createRecordFab(): HTMLElement | null {
       if (result) {
         showReplayModal(result.url);
       } else {
-        console.warn("[web-tape] 暂无可上传的最近录制");
+        console.warn(t("logNoRecent"));
       }
     } finally {
       isUploading = false;
@@ -454,7 +455,7 @@ export function createRecordFab(): HTMLElement | null {
   // 主按钮 tooltip:仅 hover 主按钮时显示,避免与子按钮 tooltip 同时出现
   btn.addEventListener("mouseenter", () => {
     if (isPendingConfirm || isRecording || isUploading) return;
-    tooltip.textContent = "开始录制";
+    tooltip.textContent = t("fabStart");
     tooltip.style.display = "block";
   });
   btn.addEventListener("mouseleave", () => {

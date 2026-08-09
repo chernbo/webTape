@@ -8,6 +8,7 @@
 import { theme } from "./theme";
 import { videoSvg, closeSvg, copySvg, successCircleSvg } from "./icons";
 import { copyToClipboard, injectStyleOnce } from "./dom";
+import { t } from "../i18n";
 
 // ─── 弹窗样式 ───────────────────────────────────────────
 
@@ -75,7 +76,7 @@ export function showReplayModal(url: string): void {
 
   const headerTitle = document.createElement("div");
   headerTitle.className = "rrweb-modal-header-title";
-  headerTitle.innerHTML = `${videoSvg}录制回放`;
+  headerTitle.innerHTML = `${videoSvg}${t("modalTitle")}`;
 
   const closeIcon = document.createElement("button");
   closeIcon.className = "rrweb-modal-close";
@@ -95,14 +96,14 @@ export function showReplayModal(url: string): void {
     <div class="rrweb-modal-result-icon">
       ${successCircleSvg(theme.colorSuccessBg, theme.colorSuccess)}
     </div>
-    <p class="rrweb-modal-result-title">录制完成</p>
-    <p class="rrweb-modal-result-sub">回放链接已生成，可复制分享给他人查看</p>
+    <p class="rrweb-modal-result-title">${t("modalComplete")}</p>
+    <p class="rrweb-modal-result-sub">${t("modalSub")}</p>
   `;
 
   // 链接区域
   const label = document.createElement("div");
   label.className = "rrweb-modal-label";
-  label.textContent = "回放链接";
+  label.textContent = t("modalLinkLabel");
 
   const urlBox = document.createElement("div");
   urlBox.className = "rrweb-modal-url-box";
@@ -127,7 +128,7 @@ export function showReplayModal(url: string): void {
       if (existing) existing.remove();
       const toast = document.createElement("span");
       toast.className = "rrweb-modal-copy-toast";
-      toast.textContent = "已复制";
+      toast.textContent = t("copied");
       copyBtn.appendChild(toast);
       setTimeout(() => toast.remove(), 1700);
     });
@@ -145,11 +146,11 @@ export function showReplayModal(url: string): void {
   footer.className = "rrweb-modal-footer";
 
   const closeBtn = document.createElement("button");
-  closeBtn.textContent = "关闭";
+  closeBtn.textContent = t("close");
   closeBtn.className = "rrweb-modal-btn rrweb-modal-btn-default";
 
   const openBtn = document.createElement("button");
-  openBtn.textContent = "打开回放";
+  openBtn.textContent = t("openReplay");
   openBtn.className = "rrweb-modal-btn rrweb-modal-btn-primary";
 
   // ── 关闭动画 ──────────────────────────────────

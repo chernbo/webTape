@@ -1,6 +1,6 @@
 {
   "name": "@webtapejs/toolbox",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "一行 <script> 或一次 import 即可接入的页面会话录制 SDK：后台滑动窗口录制、最近 N 秒一键回溯、哨兵模式自动捕获接口异常，基于 rrweb。",
   "type": "module",
   "license": "MIT",

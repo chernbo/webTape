@@ -45,6 +45,9 @@ export interface ErrorPromptIgnore {
   statusCodes?: number[];
 }
 
+/** SDK 注入 UI 的语言 / Locale of the injected UI */
+export type SdkLocale = "en" | "zh";
+
 /** configure() 的入参 */
 export interface WebTapeConfig {
   /**
@@ -52,6 +55,12 @@ export interface WebTapeConfig {
    * 生产接入 **必须** 指定, 否则数据会发往构建期默认地址而丢失.
    */
   serverUrl?: string;
+  /**
+   * 注入 UI 的语言, 默认 'en'. / Locale of the injected UI, defaults to 'en'.
+   * 也可用 `<script src="..." data-locale="zh">` 在加载期设置。
+   * Can also be set at load time via `<script src="..." data-locale="zh">`.
+   */
+  locale?: SdkLocale;
   /** 是否自动开启后台滑动录制 (默认 true), 用于"最近 N 秒"快速上报 */
   autoBackgroundRecord?: boolean;
   /** 滑动窗口长度 ms, 默认 30000 */

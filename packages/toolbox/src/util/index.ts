@@ -9,6 +9,7 @@ import {
 } from './networkXhrInterceptor'
 import { showErrorToast } from '../ui/errorToast'
 import { showReplayModal } from '../ui/replayModal'
+import { setSdkLocale, type SdkLocale } from '../i18n'
 import { getRecordConsolePlugin } from '@rrweb/rrweb-plugin-console-record'
 import {
   pushSlidingEvent,
@@ -50,6 +51,11 @@ export interface WebTapeConfig {
    * @internal @deprecated 旧的内部覆盖字段, 已由公开的 `serverUrl` 取代, 保留仅为向后兼容.
    */
   _apiBase?: string
+  /**
+   * 注入 UI 的语言, 默认 'en'. / Locale of the injected UI, defaults to 'en'.
+   * 'en' | 'zh'. 影响 FAB 提示、二次确认、哨兵 toast、回放弹窗等文案。
+   */
+  locale?: SdkLocale
 }
 
 /** 哨兵忽略名单. urls / statusCodes 任一命中则不弹 toast. */
@@ -86,6 +92,8 @@ let config: WebTapeConfig = {}
 
 export function configureRRwebToolbox(next: WebTapeConfig) {
   config = { ...config, ...next }
+  // 应用语言（默认 en）/ apply locale (defaults to en)
+  if (next.locale) setSdkLocale(next.locale)
   if (typeof next.backgroundWindowMs === 'number') {
     configureSlidingBuffer({ windowMs: next.backgroundWindowMs })
   }

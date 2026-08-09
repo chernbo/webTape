@@ -37,6 +37,8 @@ export {
   type RecordingResult,
 } from "./util";
 
+export { setSdkLocale, getSdkLocale, type SdkLocale } from "./i18n";
+
 /**
  * 挂载内置悬浮录制按钮 (FAB). 可选 —— 只有需要开箱 UI 的接入方才调用.
  * 不调用则完全静默, 由接入方自渲染 UI + 调 startRecord/stopRecord 等 API.

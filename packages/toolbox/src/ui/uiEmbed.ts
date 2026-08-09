@@ -16,6 +16,7 @@
  */
 
 import { createRecordFab } from "./recordFab";
+import { setSdkLocale } from "../i18n";
 import {
   configureRRwebToolbox,
   startBackgroundRecord,
@@ -42,8 +43,12 @@ import {
 //      (兼容 vite dev 的 <script type="module">: currentScript 为 null)
 const scriptEl =
   (document.currentScript as HTMLScriptElement | null) ??
-  document.querySelector<HTMLScriptElement>("script[data-builtin-fab]");
+  document.querySelector<HTMLScriptElement>("script[data-builtin-fab], script[data-locale]");
 const enableBuiltinFab = scriptEl?.dataset.builtinFab !== "false";
+
+// 语言: 读 <script data-locale="zh">, 默认 en。需在挂 FAB 前设置。
+// Locale: read <script data-locale="zh">, defaults to en. Must be set before mounting the FAB.
+setSdkLocale(scriptEl?.dataset.locale);
 
 if (enableBuiltinFab) {
   createRecordFab();

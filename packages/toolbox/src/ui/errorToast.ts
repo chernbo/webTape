@@ -11,6 +11,7 @@
  */
 
 import type { NetworkErrorInfo } from "../util/networkXhrInterceptor";
+import { t } from "../i18n";
 
 const STYLE_ID = "web-tape-error-toast-style";
 const TOAST_ID = "web-tape-error-toast";
@@ -197,11 +198,11 @@ export function showErrorToast(
     <div class="wt-toast-body">
       <div class="wt-toast-icon">!</div>
       <div class="wt-toast-main">
-        <div class="wt-toast-title">检测到接口异常 (${info.status})</div>
+        <div class="wt-toast-title">${t("toastErrorTitle", { status: info.status })}</div>
         <div class="wt-toast-desc">${info.method} ${shortenUrl(info.url)}</div>
         <div class="wt-toast-actions">
-          <button class="wt-toast-btn wt-toast-btn-primary" type="button">一键上报</button>
-          <button class="wt-toast-btn wt-toast-btn-ignore" type="button">忽略</button>
+          <button class="wt-toast-btn wt-toast-btn-primary" type="button">${t("toastReport")}</button>
+          <button class="wt-toast-btn wt-toast-btn-ignore" type="button">${t("toastIgnore")}</button>
         </div>
       </div>
     </div>
