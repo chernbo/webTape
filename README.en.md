@@ -103,21 +103,22 @@ Web Tape is **one system: capture + replay**. The SDK records and uploads; the r
 
 ### ① Self-host the replay service
 
-Clone the repo and use the Docker Compose that ships with `apps/replayer` (builds from source, MySQL + replayer):
+With Docker installed, one command does it all — generates a random MySQL password, brings up MySQL + the replayer. **No manual `.env`, no clone needed**:
 
 ```bash
-git clone https://github.com/chernbo/webTape.git
-cd webTape/apps/replayer
-cp .env.example .env                        # adjust MySQL password / CORS_ALLOW_ORIGIN as needed
-docker compose -f docker-compose.yml up -d  # builds image + starts MySQL + replayer, runs prisma db push on boot
+curl -fsSL https://raw.githubusercontent.com/chernbo/webTape/main/deploy/install.sh | bash
 ```
 
-Then open `http://localhost:3100`; your upload endpoint is `http://localhost:3100/api/replayer` (use it as `serverUrl` in step 2).
+Then open `http://localhost:3100`; your upload endpoint is `http://localhost:3100/api/replayer` (use it as `serverUrl` in step 2). Optional:
+
+```bash
+WEBTAPE_PORT=8080 bash install.sh     # custom port / or download the script and run locally
+```
 
 - **Prerequisites**: Docker + Docker Compose v2.
-- **Going to production**: put your own reverse proxy (Nginx / Caddy / …) with HTTPS in front of `:3100`, and set `REPLAYER_PUBLIC_URL` in `.env` to your public domain.
+- **Production**: put your own reverse proxy (Nginx / Caddy / …) with HTTPS in front of `:3100`, and set `REPLAYER_PUBLIC_URL` in the generated `.env` to your public domain.
 
-> 🔓 **The upload endpoint is unauthenticated by design.** Web Tape's capture side is a one-line script that "piggybacks" on business pages of arbitrary origins — requiring auth on the upload endpoint would force a secret into client-side code (not actually secure) and break the zero-integration goal. So `/api/replayer` is open by default, and **auth / access control is left to the deployer at the gateway / reverse-proxy layer** (e.g. Caddy Basic Auth, IP allowlist, private network / VPN). Do not expose an unprotected instance to the untrusted public internet.
+> 🔓 **The upload endpoint is unauthenticated by design**: the capture side is a one-line script injected into arbitrary pages, so auth on the upload endpoint would leak a secret into client code. Add auth yourself at the reverse-proxy / gateway layer (Basic Auth, IP allowlist, private network); don't expose an unprotected instance to the public internet.
 
 ---
 
@@ -129,13 +130,15 @@ The capture side is published as [`@webtapejs/toolbox`](https://www.npmjs.com/pa
 
 ```bash
 npm install @webtapejs/toolbox
+# or: pnpm add @webtapejs/toolbox / yarn add @webtapejs/toolbox
 ```
 
 ```ts
 import { configure, mountFab } from '@webtapejs/toolbox'
 
 configure({
-  serverUrl: 'https://your-replayer/api/replayer', // required: the address from step 1
+  // required: the endpoint from step 1 — locally this is http://localhost:3100/api/replayer
+  serverUrl: 'http://localhost:3100/api/replayer',
   autoBackgroundRecord: true,
   errorPrompt: true,
 })
@@ -148,7 +151,7 @@ mountFab() // mount the built-in floating button; skip it to stay silent and ren
 <script src="https://unpkg.com/@webtapejs/toolbox/dist/web-tape.iife.js"></script>
 <script>
   window._webTape.configure({
-    serverUrl: 'https://your-replayer/api/replayer',
+    serverUrl: 'http://localhost:3100/api/replayer',
     autoBackgroundRecord: true,
     errorPrompt: true,
   })

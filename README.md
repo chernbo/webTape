@@ -101,22 +101,22 @@ Web Tape 是**采集 + 回放一套系统**：SDK 在页面录制并上传，回
 
 ### ① 自建回放服务
 
-克隆仓库，用 `apps/replayer` 自带的 Docker Compose 起一整套（MySQL + 回放服务，从源码构建）：
+装了 Docker，一行命令搞定——自动生成随机 MySQL 密码、拉起 MySQL + 回放服务，**无需手动配 `.env`、无需克隆仓库**：
 
 ```bash
-git clone https://github.com/chernbo/webTape.git
-cd webTape/apps/replayer
-cp .env.example .env                        # 按需改 MySQL 密码 / CORS_ALLOW_ORIGIN
-docker compose -f docker-compose.yml up -d  # 构建镜像 + 起 MySQL + 回放服务，启动即 prisma db push
+curl -fsSL https://raw.githubusercontent.com/chernbo/webTape/main/deploy/install.sh | bash
 ```
 
-跑起来后访问 `http://localhost:3100`，你的上传地址就是 `http://localhost:3100/api/replayer`（第二步 `serverUrl` 用它）。
+跑完访问 `http://localhost:3100`，你的上传地址就是 `http://localhost:3100/api/replayer`（第二步 `serverUrl` 用它）。可选：
+
+```bash
+WEBTAPE_PORT=8080 bash install.sh     # 换端口 / 或先下载脚本再本地跑
+```
 
 - **前置**：已装 Docker + Docker Compose v2。
-- **生产上线**：用你自己的反代（Nginx / Caddy 等）配好 HTTPS 指向 `:3100`，并把 `.env` 里 `REPLAYER_PUBLIC_URL` 改成你的公网域名。
-- 拉 `mysql:8.4` 慢见下方 [Docker 国内镜像加速](#-docker-镜像加速)。
+- **生产上线**：自己的反代（Nginx / Caddy 等）配 HTTPS 指向 `:3100`，并把生成的 `.env` 里 `REPLAYER_PUBLIC_URL` 改成公网域名。
 
-> 🔓 **上传接口默认不做鉴权**。Web Tape 的采集端是「寄生」在业务页面上的一行脚本，注入到任意来源的页面——若在上传接口上要求鉴权，密钥势必暴露在前端代码里，既谈不上安全，也违背「零改造接入」的初衷。因此上传（`/api/replayer`）默认开放，**鉴权与访问控制交由部署方按需在网关/反代层处理**（如 Caddy Basic Auth、IP 白名单、内网隔离 / VPN）。请勿把未加保护的实例直接暴露到不可信的公网。
+> 🔓 **上传接口默认不鉴权**：采集端是注入到任意页面的一行脚本，在上传口做鉴权会把密钥暴露到前端。需要鉴权请自行在反代/网关层加（Basic Auth、IP 白名单、内网隔离等），勿把未保护实例暴露到公网。
 
 ---
 
@@ -128,13 +128,15 @@ docker compose -f docker-compose.yml up -d  # 构建镜像 + 起 MySQL + 回放�
 
 ```bash
 npm install @webtapejs/toolbox
+# 或（推荐）：pnpm add @webtapejs/toolbox / yarn add @webtapejs/toolbox
 ```
 
 ```ts
 import { configure, mountFab } from '@webtapejs/toolbox'
 
 configure({
-  serverUrl: 'https://你的回放服务/api/replayer', // 必填：第一步部署的地址
+  // 必填：指向第一步部署的回放服务。本地自建默认就是下面这个地址：
+  serverUrl: 'http://localhost:3100/api/replayer',
   autoBackgroundRecord: true,
   errorPrompt: true,
 })
@@ -147,7 +149,7 @@ mountFab() // 需要内置悬浮录制按钮时调用；不调则静默，由你
 <script src="https://unpkg.com/@webtapejs/toolbox/dist/web-tape.iife.js"></script>
 <script>
   window._webTape.configure({
-    serverUrl: 'https://你的回放服务/api/replayer',
+    serverUrl: 'http://localhost:3100/api/replayer',
     autoBackgroundRecord: true,
     errorPrompt: true,
   })
@@ -186,45 +188,6 @@ pnpm dev                     # http://localhost:5173 (内置 demo 页)
 pnpm build                   # 产出 dist/: index.mjs (npm) + web-tape.iife.js (CDN) + *.d.ts
 ```
 
-<a id="-docker-镜像加速"></a>
-<details>
-<summary>🐢 拉取 <code>mysql:8.4</code> 很慢？配置 Docker 国内镜像加速器</summary>
-
-国内直连 Docker Hub 常常几十 KB/s。给 Docker 配一个 registry 镜像加速器即可提速。
-
-**方式一（推荐）：Docker Desktop 配置**
-
-打开 Docker Desktop → Settings → Docker Engine，在 JSON 里加上 `registry-mirrors`，然后 Apply & Restart：
-
-```json
-{
-  "registry-mirrors": [
-    "https://docker.1ms.run",
-    "https://docker.mirrors.ustc.edu.cn"
-  ]
-}
-```
-
-**方式二：Linux 服务器 `/etc/docker/daemon.json`**
-
-```bash
-sudo mkdir -p /etc/docker
-sudo tee /etc/docker/daemon.json <<'EOF'
-{ "registry-mirrors": ["https://docker.1ms.run", "https://docker.mirrors.ustc.edu.cn"] }
-EOF
-sudo systemctl daemon-reload && sudo systemctl restart docker
-```
-
-配好后验证并重新拉取：
-
-```bash
-docker info | grep -A3 "Registry Mirrors"   # 确认镜像源已生效
-docker pull mysql:8.4                        # 或直接 docker compose up -d
-```
-
-> ⚠️ 公共镜像加速器时常关停或限流，上面两个只是示例。若失效可换其他可用源（如各云厂商 ACR 提供的加速地址），机制都一样——往 `registry-mirrors` 里填地址即可。
-
-</details>
 
 ---
 
