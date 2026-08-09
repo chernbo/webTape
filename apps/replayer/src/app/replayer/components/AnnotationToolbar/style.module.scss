@@ -1,0 +1,38 @@
+.toolbar {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 10px;
+  background: var(--panel-bg-deep);
+  border: 1px solid var(--panel-border);
+  border-radius: 999px;
+  color: var(--panel-text);
+}
+
+.colorDot {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  cursor: pointer;
+  padding: 0;
+  transition: transform 0.15s ease, outline-color 0.15s ease;
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+}
+
+.colorDot:hover {
+  transform: scale(1.18);
+}
+
+.selected {
+  outline-color: var(--panel-accent);
+  transform: scale(1.14);
+}
+
+.hint {
+  font-size: 11px;
+  color: var(--panel-text-muted);
+  margin-left: 6px;
+  white-space: nowrap;
+}

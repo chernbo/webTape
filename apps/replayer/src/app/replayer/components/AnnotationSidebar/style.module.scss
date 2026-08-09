@@ -1,0 +1,106 @@
+.drawerRoot :global(.ant-drawer-content) {
+  background: var(--panel-bg);
+  color: var(--panel-text);
+}
+
+.drawerRoot :global(.ant-drawer-header) {
+  background: var(--panel-bg-deep);
+  border-bottom: 1px solid var(--panel-border);
+}
+
+.drawerRoot :global(.ant-drawer-title) {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  color: var(--panel-text-muted);
+}
+
+.drawerRoot :global(.ant-drawer-close) {
+  color: var(--panel-text-muted);
+}
+
+.drawerRoot :global(.ant-drawer-body) {
+  padding: 12px;
+  background: var(--panel-bg);
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.card {
+  padding: 10px 12px;
+  background: var(--panel-bg-deep);
+  border: 1px solid var(--panel-border);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  color: var(--panel-text);
+}
+
+.card:hover {
+  border-color: var(--panel-accent);
+}
+
+.active {
+  border-color: var(--panel-accent);
+  box-shadow: 0 0 0 2px rgba(79, 193, 255, 0.25);
+}
+
+.head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 22px;
+  height: 22px;
+  padding: 0 6px;
+  border: 2px solid;
+  border-radius: 3px;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.timestamp {
+  font-size: 11px;
+  color: var(--panel-text-muted);
+  font-family: monospace;
+  padding: 2px 6px;
+  border-radius: 3px;
+  background: var(--panel-fill);
+}
+
+.deleteBtn {
+  margin-left: auto;
+  background: transparent;
+  border: none;
+  color: var(--panel-text-dim);
+  cursor: pointer;
+  padding: 2px 4px;
+  border-radius: 3px;
+}
+
+.deleteBtn:hover {
+  color: var(--panel-error);
+  background: var(--panel-fill);
+}
+
+.commentInput :global(.ant-input) {
+  padding: 2px 0 !important;
+  font-size: 12px;
+  background: transparent !important;
+  color: var(--panel-text) !important;
+}
+
+.commentInput :global(.ant-input::placeholder) {
+  color: var(--panel-text-dim) !important;
+}

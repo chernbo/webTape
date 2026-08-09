@@ -1,0 +1,186 @@
+.container {
+  background: var(--panel-bg);
+  border-top: 1px solid var(--panel-border);
+  padding: 8px 16px 10px;
+  font-family: "JetBrains Mono", "Fira Code", "Consolas", monospace;
+  font-size: 12px;
+  color: var(--panel-text);
+  flex-shrink: 0;
+  user-select: none;
+}
+
+.trackWrapper { margin-bottom: 6px; }
+
+.track {
+  position: relative;
+  height: 6px;
+  background: var(--panel-track-bg);
+  border-radius: 3px;
+  cursor: pointer;
+  margin-bottom: 4px;
+}
+
+.track:hover {
+  height: 8px;
+  margin-top: -1px;
+  transition: height 0.1s, margin-top 0.1s;
+}
+
+.trackFill {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  background: var(--panel-track-fill);
+  border-radius: 3px;
+  pointer-events: none;
+}
+
+.playhead {
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 12px;
+  height: 12px;
+  background: var(--panel-text);
+  border-radius: 50%;
+  pointer-events: none;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+.track:hover .playhead { opacity: 1; }
+
+.marker {
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.markerNetwork { background: #4a50f6; }
+.markerConsole { background: var(--panel-error); }
+
+.hoverTooltip {
+  position: absolute;
+  bottom: calc(100% + 6px);
+  transform: translateX(-50%);
+  background: var(--panel-fill);
+  border: 1px solid var(--panel-border);
+  color: var(--panel-text);
+  font-size: 11px;
+  padding: 2px 6px;
+  border-radius: 3px;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.timeLabels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 10px;
+  color: var(--panel-text-dim);
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.playBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  background: none;
+  border: 1px solid var(--panel-fill-hover);
+  border-radius: 4px;
+  color: var(--panel-text);
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+  flex-shrink: 0;
+}
+
+.playBtn:hover {
+  background: var(--panel-fill);
+  border-color: var(--panel-text-muted);
+}
+
+.timeDisplay {
+  font-size: 12px;
+  color: var(--panel-text-muted);
+  font-variant-numeric: tabular-nums;
+  min-width: 80px;
+}
+
+.speedGroup { display: flex; gap: 2px; }
+
+.speedBtn {
+  background: none;
+  border: 1px solid transparent;
+  color: var(--panel-text-dim);
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 8px;
+  cursor: pointer;
+  border-radius: 2px;
+  font-family: inherit;
+  transition: background 0.15s, color 0.15s;
+}
+
+.speedBtn:hover {
+  background: var(--panel-fill);
+  color: var(--panel-text);
+}
+
+.speedBtnActive {
+  background: var(--panel-fill);
+  border-color: var(--panel-text-muted);
+  color: var(--panel-text);
+}
+
+.hint {
+  font-size: 10px;
+  color: var(--panel-text-dim);
+  margin-left: auto;
+  letter-spacing: 0.02em;
+}
+
+.extraSlot {
+  display: flex;
+  align-items: center;
+}
+
+/* tooltip */
+.tooltip {
+  position: relative;
+  cursor: default;
+}
+
+.tooltip::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--panel-fill);
+  border: 1px solid var(--panel-border);
+  color: var(--panel-text);
+  font-size: 11px;
+  font-family: "JetBrains Mono", "Fira Code", "Consolas", monospace;
+  padding: 3px 8px;
+  border-radius: 3px;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s;
+  z-index: 100;
+}
+
+.tooltip:hover::after { opacity: 1; }

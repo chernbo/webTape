@@ -1,0 +1,13 @@
+# pnpm 11 起, 这类设置从 package.json 的 "pnpm" 字段迁移到这里。
+#
+# verifyDepsBeforeRun=false: 关闭「运行前依赖校验」, 让 `pnpm build` / `prepublishOnly` 正常执行。
+verifyDepsBeforeRun: false
+
+# strictDepBuilds=false: 依赖有未批准的构建脚本时不致命。
+#   pnpm 默认拦截依赖 postinstall, 在 CI(非交互)会以 ERR_PNPM_IGNORED_BUILDS 退出 1。
+#   本项目唯一涉及的是 esbuild, 其二进制来自平台可选包(@esbuild/*), 构建不依赖那个 postinstall,
+#   故关闭该致命校验是安全的, 让 CI 里 `pnpm install --frozen-lockfile` 正常通过。
+strictDepBuilds: false
+
+allowBuilds:
+  esbuild: set this to true or false

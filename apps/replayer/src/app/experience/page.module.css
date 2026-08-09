@@ -1,0 +1,204 @@
+.page {
+  min-height: 100vh;
+  background: #f5f7fa;
+}
+
+.header {
+  background: #fff;
+  border-bottom: 1px solid #f0f0f0;
+  padding: 16px 32px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.headerBack {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #6b7280;
+  text-decoration: none;
+  font-size: 13px;
+  transition: color 0.15s;
+}
+.headerBack:hover { color: #1677ff; }
+
+.headerTitle {
+  font-size: 18px;
+  font-weight: 700;
+  color: #1f2329;
+  margin: 0;
+}
+
+.headerSub {
+  font-size: 12px;
+  color: #86909c;
+  margin: 0;
+}
+
+.body {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px 32px 80px;
+}
+
+/* tabs */
+.tabs {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 1px 4px rgba(0,0,0,.06);
+  overflow: hidden;
+}
+
+/* 三大 tab 各自的内容区 */
+.tabContent {
+  padding: 24px;
+}
+
+/* 说明卡 */
+.demoDesc {
+  margin-bottom: 20px;
+  padding: 14px 16px;
+  background: #f0f5ff;
+  border-radius: 8px;
+  border-left: 3px solid #1677ff;
+  font-size: 13px;
+  color: #344563;
+  line-height: 1.7;
+}
+
+.demoDesc strong { color: #1677ff; }
+
+/* 两栏布局 */
+.demoGrid {
+  display: grid;
+  grid-template-columns: 1fr 360px;
+  gap: 20px;
+}
+
+@media (max-width: 900px) {
+  .demoGrid { grid-template-columns: 1fr; }
+}
+
+.formCard {
+  background: #fff;
+  border: 1px solid #f0f0f0;
+  border-radius: 10px;
+  padding: 24px;
+}
+
+.panelCard {
+  background: #fff;
+  border: 1px solid #f0f0f0;
+  border-radius: 10px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.panelTitle {
+  font-size: 13px;
+  font-weight: 600;
+  color: #344563;
+  margin-bottom: 4px;
+}
+
+.stateTag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.stateFinished { background: #f6ffed; color: #389e0d; }
+.stateRecording { background: #fff2e8; color: #d4380d; }
+.stateUploading { background: #e6f7ff; color: #096dd9; }
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.resultBox {
+  margin-top: 8px;
+  padding: 12px;
+  background: #f6ffed;
+  border: 1px solid #b7eb8f;
+  border-radius: 8px;
+  font-size: 12px;
+  word-break: break-all;
+}
+
+.sentinel {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.sentinelDesc {
+  padding: 14px 16px;
+  background: #fff9f0;
+  border-left: 3px solid #fa8c16;
+  border-radius: 8px;
+  font-size: 13px;
+  color: #5f3207;
+  line-height: 1.7;
+}
+
+.errBtnGroup {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* ─── Footer ─────────────────────────────────── */
+.footer {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  padding: 48px 24px 32px;
+  text-align: center;
+  border-top: 1px solid #f0f0f0;
+  background: #fff;
+}
+.footerBrand {
+  font-size: 22px;
+  font-weight: 800;
+  color: #94a3b8;
+  letter-spacing: -0.01em;
+}
+.footerStack {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+}
+.footerStack span {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 14px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  font-family: "JetBrains Mono", "Fira Code", "SFMono-Regular", monospace;
+  font-size: 12.5px;
+  color: #64748b;
+  transition: all 0.18s;
+}
+.footerStack span:hover {
+  border-color: #c7d2fe;
+  color: #2563eb;
+}
+.footerSign {
+  font-size: 13px;
+  color: #94a3b8;
+  font-weight: 600;
+}

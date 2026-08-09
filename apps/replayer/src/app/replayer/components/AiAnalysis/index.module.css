@@ -1,0 +1,63 @@
+.btn {
+  flex-shrink: 0;
+}
+
+.loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 40px 20px;
+}
+
+.progressTip {
+  font-size: 13px;
+  color: #888;
+  margin: 0;
+}
+
+.result {
+  font-size: 14px;
+  line-height: 1.7;
+  word-break: break-word;
+}
+
+.result h2 {
+  font-size: 15px;
+  font-weight: 600;
+  margin: 16px 0 8px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.result h3 {
+  font-size: 14px;
+  font-weight: 600;
+  margin: 12px 0 6px;
+}
+
+.result p {
+  margin: 6px 0;
+}
+
+.result ul, .result ol {
+  padding-left: 20px;
+  margin: 6px 0;
+}
+
+.result li {
+  margin: 3px 0;
+}
+
+.result code {
+  background: #f5f5f5;
+  padding: 1px 5px;
+  border-radius: 3px;
+  font-size: 12px;
+  font-family: monospace;
+}
+
+.placeholder {
+  color: #aaa;
+  font-size: 13px;
+}

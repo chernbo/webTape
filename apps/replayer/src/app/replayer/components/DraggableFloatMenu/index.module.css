@@ -1,0 +1,174 @@
+/* DraggableFloatMenu */
+
+.root {
+  position: fixed;
+  z-index: 9999;
+  top: 0;
+  left: 0;
+  user-select: none;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+}
+
+/* ── CSS 变量：随主题切换触发按钮和菜单底色 ── */
+.root {
+  --btn-bg: #f0f0f0;
+  --btn-bg-hover: #e0e0e0;
+  --btn-bg-open: #e8e8e8;
+  --btn-border: rgba(0, 0, 0, 0.12);
+  --btn-border-open: rgba(0, 0, 0, 0.2);
+  --btn-color: #111;
+  --btn-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  --btn-shadow-hover: 0 4px 14px rgba(0, 0, 0, 0.22);
+  --btn-ring: rgba(0, 0, 0, 0.06);
+}
+
+.root[data-theme="dark"] {
+  --btn-bg: #1a1a1a;
+  --btn-bg-hover: #2a2a2a;
+  --btn-bg-open: #222;
+  --btn-border: rgba(255, 255, 255, 0.15);
+  --btn-border-open: rgba(255, 255, 255, 0.3);
+  --btn-color: #fff;
+  --btn-shadow: 0 2px 8px rgba(0, 0, 0, 0.45);
+  --btn-shadow-hover: 0 4px 14px rgba(0, 0, 0, 0.55);
+  --btn-ring: rgba(255, 255, 255, 0.08);
+}
+
+/* ── 触发按钮 ── */
+.trigger {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1.5px solid var(--btn-border);
+  background: var(--btn-bg);
+  color: var(--btn-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: grab;
+  box-shadow: var(--btn-shadow);
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+  outline: none;
+  padding: 0;
+}
+
+.trigger:hover {
+  transform: scale(1.1);
+  box-shadow: var(--btn-shadow-hover);
+  background: var(--btn-bg-hover);
+}
+
+.trigger:active {
+  cursor: grabbing;
+  transform: scale(0.96);
+}
+
+.triggerOpen {
+  background: var(--btn-bg-open);
+  border-color: var(--btn-border-open);
+  box-shadow: 0 0 0 3px var(--btn-ring);
+}
+
+/* ── 弹出菜单（始终向下展开） ── */
+.menu {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-8px) scale(0.95);
+  transform-origin: top right;
+  transition:
+    max-height 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 0.2s ease,
+    transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.menuOpen {
+  max-height: 200px;
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0) scale(1);
+}
+
+/* 左侧时调整 transform-origin */
+.rootLeft .menu {
+  transform-origin: top left;
+}
+
+/* ── 菜单项基础样式 ── */
+.menuItem {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 18px;
+  border: 1.5px solid transparent;
+  font-size: 12px;
+  font-family: inherit;
+  cursor: pointer;
+  white-space: nowrap;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  transition: background 0.15s ease, color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+  outline: none;
+}
+
+.menuItem:hover {
+  transform: scale(1.04);
+}
+
+/* Light 按钮：始终白底黑字，不随主题变化 */
+.menuItemLight {
+  background: #fff;
+  color: #444;
+  border-color: rgba(0, 0, 0, 0.1);
+}
+
+.menuItemLight:hover {
+  background: #f5f5f5;
+  color: #000;
+}
+
+.menuItemLight.menuItemActive {
+  background: #fff;
+  color: #000;
+  border-color: rgba(0, 0, 0, 0.2);
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.08), 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Dark 按钮：始终黑底白字，不随主题变化 */
+.menuItemDark {
+  background: #1a1a1a;
+  color: rgba(255, 255, 255, 0.7);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.menuItemDark:hover {
+  background: #2a2a2a;
+  color: #fff;
+}
+
+.menuItemDark.menuItemActive {
+  background: #000;
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.2);
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.08), 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+/* 反馈文档按钮：蓝色系 */
+.menuItemDoc {
+  background: #1677ff;
+  color: #fff;
+  border-color: rgba(22, 119, 255, 0.3);
+  text-decoration: none;
+}
+
+.menuItemDoc:hover {
+  background: #4096ff;
+  color: #fff;
+}

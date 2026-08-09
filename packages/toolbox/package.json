@@ -1,0 +1,64 @@
+{
+  "name": "@webtapejs/toolbox",
+  "version": "0.1.1",
+  "description": "一行 <script> 或一次 import 即可接入的页面会话录制 SDK：后台滑动窗口录制、最近 N 秒一键回溯、哨兵模式自动捕获接口异常，基于 rrweb。",
+  "type": "module",
+  "license": "MIT",
+  "author": "chenrbo",
+  "keywords": [
+    "rrweb",
+    "session-replay",
+    "recording",
+    "bug-reproduction",
+    "webtape",
+    "sentinel"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chernbo/webTape.git",
+    "directory": "packages/toolbox"
+  },
+  "homepage": "https://github.com/chernbo/webTape/tree/main/packages/toolbox#readme",
+  "main": "dist/index.mjs",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs"
+    },
+    "./iife": "./dist/web-tape.iife.js",
+    "./package.json": "./package.json"
+  },
+  "unpkg": "dist/web-tape.iife.js",
+  "jsdelivr": "dist/web-tape.iife.js",
+  "sideEffects": [
+    "./dist/web-tape.iife.js"
+  ],
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "dev": "vite",
+    "typecheck": "tsc --noEmit",
+    "build:es": "BUILD_TARGET=es vite build",
+    "build:iife": "BUILD_TARGET=iife vite build",
+    "build:types": "tsc -p tsconfig.build.json",
+    "build": "pnpm typecheck && pnpm build:es && pnpm build:iife && pnpm build:types",
+    "preview": "vite preview",
+    "prepublishOnly": "pnpm build"
+  },
+  "devDependencies": {
+    "typescript": "~5.9.3",
+    "vite": "^7.2.4"
+  },
+  "dependencies": {
+    "@rrweb/packer": "^2.1.0",
+    "@rrweb/rrweb-plugin-console-record": "2.0.0-alpha.20",
+    "rrweb": "2.0.0"
+  }
+}

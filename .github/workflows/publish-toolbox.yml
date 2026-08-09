@@ -1,0 +1,82 @@
+name: Publish toolbox to npm
+
+# ------------------------------------------------------------------
+# 发布 @webtapejs/toolbox 到 npm。
+#
+# 触发方式:
+#   1. 打版本 tag 并推送 (推荐):
+#        # 先在 packages/toolbox/package.json 把 version 改成 0.1.2
+#        git commit -am "release(toolbox): v0.1.1"
+#        git tag toolbox-v0.1.1
+#        git push origin toolbox-v0.1.1
+#      → CI 校验 tag 版本 == package.json 版本, 构建后发布
+#   2. 手动触发 (workflow_dispatch): 直接发布当前 package.json 里的 version
+#
+# 认证 (二选一, 无需在仓库存长期 token 用第一种):
+#   A. npm Trusted Publishing (OIDC, 推荐): 在 npmjs.com 该包 Settings →
+#      Trusted Publisher 里绑定本仓库 + 本 workflow 文件名, 之后 tokenless 发布。
+#   B. NPM_TOKEN Secret: 仓库 Settings → Secrets 添加 NPM_TOKEN
+#      (Granular token, 勾 Read and write + @webtapejs scope)。
+# ------------------------------------------------------------------
+
+on:
+  push:
+    tags:
+      - 'toolbox-v*'
+  workflow_dispatch:
+
+defaults:
+  run:
+    working-directory: packages/toolbox
+
+jobs:
+  publish:
+    name: Build & publish
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write # OIDC 可信发布 + provenance 所需
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 11
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          registry-url: 'https://registry.npmjs.org'
+          cache: pnpm
+          cache-dependency-path: packages/toolbox/pnpm-lock.yaml
+
+      - name: Ensure recent npm (OIDC / provenance 需要 npm >= 11.5.1)
+        run: npm install -g npm@latest
+
+      - name: Install deps
+        run: pnpm install --frozen-lockfile
+
+      - name: Verify tag version matches package.json
+        if: startsWith(github.ref, 'refs/tags/')
+        run: |
+          TAG_VERSION="${GITHUB_REF_NAME#toolbox-v}"
+          PKG_VERSION="$(node -p "require('./package.json').version")"
+          echo "tag=$TAG_VERSION  package.json=$PKG_VERSION"
+          if [ "$TAG_VERSION" != "$PKG_VERSION" ]; then
+            echo "::error::tag 版本 ($TAG_VERSION) 与 package.json ($PKG_VERSION) 不一致"
+            exit 1
+          fi
+
+      - name: Build
+        run: pnpm build
+
+      # 注: 未加 --provenance, 因 sigstore 溯源要求仓库为 public;
+      # 仓库为 private 时加 --provenance 会 E422 失败。仓库转公开后可加回。
+      - name: Publish to npm
+        run: npm publish --access public
+        env:
+          # 配了 Trusted Publisher 时此值为空也能走 OIDC; 否则用 NPM_TOKEN
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

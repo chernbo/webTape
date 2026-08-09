@@ -1,0 +1,11 @@
+.curlBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 0 4px !important;
+  height: 22px !important;
+  font-size: 11px !important;
+}
+.curlBtn:hover {
+  color: var(--panel-accent) !important;
+}

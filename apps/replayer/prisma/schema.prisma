@@ -1,0 +1,53 @@
+// webTape-replayer 数据库 schema
+// 修改后执行: pnpm prisma migrate dev --name <改动说明>
+// 部署到远程: pnpm prisma migrate deploy
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+/// 录屏元信息 + 事件本体
+/// events 字段直接存 rrweb JSON 字符串 (LONGTEXT, 上限 4GB, 实际录屏一般几 MB)
+model Recording {
+  id        String   @id @db.VarChar(64)        // sourceId
+  title     String?  @db.VarChar(200)
+  duration  Int?                                // 录屏时长 (ms)
+  size      Int?                                // events JSON 字节数
+  events    String   @db.LongText               // ← rrweb 事件 JSON 字符串
+
+  // 录制页面上下文
+  pageUrl   String?  @map("page_url")   @db.VarChar(512)
+  pageTitle String?  @map("page_title") @db.VarChar(200)
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt      @map("updated_at")
+
+  annotations Annotation[]
+
+  @@index([createdAt])
+  @@index([pageUrl])     // 按页面统计
+  @@map("recordings")
+}
+
+/// 批注表
+model Annotation {
+  id          String   @id @db.VarChar(64)
+  recordingId String   @map("recording_id") @db.VarChar(64)
+  index       Int
+  timestamp   Float
+  x           Float
+  y           Float
+  comment     String?  @db.Text
+  color       String   @db.VarChar(20)
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  recording Recording @relation(fields: [recordingId], references: [id], onDelete: Cascade)
+
+  @@index([recordingId])
+  @@map("annotations")
+}

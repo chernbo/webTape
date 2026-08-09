@@ -1,0 +1,72 @@
+# ------------------------------------------------------------------
+# 生产环境 (线上服务器)
+#
+# 特点:
+#   - replayer 直接拉 GHCR 镜像, 不本地 build (CI 已经构建好)
+#   - MySQL 端口不暴露到公网, 只通过内部网络给 replayer 用
+#   - replayer 端口只绑 127.0.0.1, 由 Caddy/nginx 反代出 443
+#   - REPLAYER_IMAGE 支持指定具体 tag, 便于回滚
+#
+# 使用:
+#   docker compose -f compose.prod.yaml up -d          # 默认拉 :latest
+#   REPLAYER_IMAGE=ghcr.io/chernbo/webtape-replayer:sha-abc1234 \
+#     docker compose -f compose.prod.yaml up -d         # 回滚到特定 tag
+#
+#   docker compose -f compose.prod.yaml pull   # 拉新镜像
+#   docker compose -f compose.prod.yaml logs -f replayer
+# ------------------------------------------------------------------
+
+services:
+  mysql:
+    image: mysql:8.4
+    container_name: webtape-mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - webtape
+    healthcheck:
+      test:
+        [
+          'CMD-SHELL',
+          'mysqladmin ping -h 127.0.0.1 -u${MYSQL_USER} -p${MYSQL_PASSWORD} --silent',
+        ]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 20s
+
+  replayer:
+    # CI 里通过 REPLAYER_IMAGE 传具体 tag, 未指定时用 latest
+    image: ${REPLAYER_IMAGE:-ghcr.io/chernbo/webtape-replayer:latest}
+    container_name: webtape-replayer
+    restart: always
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: mysql://${MYSQL_USER}:${MYSQL_PASSWORD}@mysql:3306/${MYSQL_DATABASE}
+      REPLAYER_PUBLIC_URL: ${REPLAYER_PUBLIC_URL}
+      # CORS: 无网关处理跨域时必须设 (在 .env 里配 CORS_ALLOW_ORIGIN=* 或业务域名白名单);
+      # 留空则不注入 CORS (适用于由网关/反代统一加 CORS 的场景)
+      CORS_ALLOW_ORIGIN: ${CORS_ALLOW_ORIGIN:-}
+      NODE_ENV: production
+    # 只监听 127.0.0.1:3100, 外网通过 Caddy 反代访问
+    ports:
+      - '127.0.0.1:3100:3000'
+    networks:
+      - webtape
+    command: >
+      sh -c "pnpm prisma db push && pnpm exec next start --hostname 0.0.0.0 --port 3000"
+
+volumes:
+  mysql-data:
+
+networks:
+  webtape:
+    driver: bridge

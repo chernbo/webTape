@@ -1,0 +1,88 @@
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+/* ── Replay panel 主题变量（默认 dark）── */
+[data-theme="dark"],
+:root {
+  --panel-bg: #1e1e1e;
+  --panel-bg-deep: #1a1a1a;
+  --panel-bg-hover: #252525;
+  --panel-border: #2d2d2d;
+  --panel-border-subtle: #2a2a2a;
+  --panel-text: #d4d4d4;
+  --panel-text-muted: #9d9d9d;
+  --panel-text-dim: #6b6b6b;
+  --panel-fill: #2d2d2d;
+  --panel-fill-hover: #3d3d3d;
+  --panel-accent: #4fc1ff;
+  --panel-error: #f48771;
+  --panel-warn: #cca700;
+  --panel-success: #89d185;
+  --panel-track-fill: #4fc1ff;
+  --panel-track-bg: #2d2d2d;
+  --panel-scrollbar: #3d3d3d;
+  --wrapper-bg: #111111;
+  --resize-handle-bg: #2a2a2a;
+}
+
+[data-theme="light"] {
+  --panel-bg: #ffffff;
+  --panel-bg-deep: #f5f5f5;
+  --panel-bg-hover: #f0f0f0;
+  --panel-border: #e0e0e0;
+  --panel-border-subtle: #ebebeb;
+  --panel-text: #1e1e1e;
+  --panel-text-muted: #555555;
+  --panel-text-dim: #999999;
+  --panel-fill: #f0f0f0;
+  --panel-fill-hover: #e0e0e0;
+  --panel-accent: #0078d4;
+  --panel-error: #d32f2f;
+  --panel-warn: #e65100;
+  --panel-success: #2e7d32;
+  --panel-track-fill: #0078d4;
+  --panel-track-bg: #e0e0e0;
+  --panel-scrollbar: #c0c0c0;
+  --wrapper-bg: #f0f0f0;
+  --resize-handle-bg: #d0d0d0;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #ededed;
+    --foreground: #ededed;
+  }
+}
+
+html,
+body {
+  max-width: 100vw;
+  overflow-x: hidden;
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: Arial, Helvetica, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+@media (prefers-color-scheme: dark) {
+  html {
+    color-scheme: dark;
+  }
+}
