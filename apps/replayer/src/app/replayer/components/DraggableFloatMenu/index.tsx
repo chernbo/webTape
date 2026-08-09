@@ -9,8 +9,9 @@
 import { useEffect, useRef, useState } from "react";
 import Draggable, { DraggableData, DraggableEvent } from "react-draggable";
 import { useTheme } from "../../context/ThemeContext";
+import { useI18n } from "../../../i18n";
 import styles from "./index.module.css";
-import { FormOutlined } from "@ant-design/icons";
+import { FormOutlined, GlobalOutlined } from "@ant-design/icons";
 
 // 距离屏幕边缘的基础间距（px）
 const EDGE_PADDING = 20;
@@ -55,6 +56,7 @@ const nearestCorner = (x: number, y: number): Corner => {
 
 const DraggableFloatMenu = () => {
   const { mode, setMode } = useTheme();
+  const { locale, toggleLocale, t } = useI18n();
   const nodeRef = useRef<HTMLDivElement>(null);
   const [open, setOpen] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
@@ -140,7 +142,7 @@ const DraggableFloatMenu = () => {
         <button
           className={`${styles.trigger} ${open ? styles.triggerOpen : ""}`}
           onClick={handleBtnClick}
-          title="Theme"
+          title={t("floatMenu.theme")}
         >
           {mode === "dark" ? (
             <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
@@ -176,7 +178,7 @@ const DraggableFloatMenu = () => {
               setMode("light");
               setOpen(false);
             }}
-            title="Light theme"
+            title={t("floatMenu.light")}
           >
             <svg
               width="14"
@@ -196,7 +198,7 @@ const DraggableFloatMenu = () => {
               <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
               <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
             </svg>
-            <span>Light</span>
+            <span>{t("floatMenu.light")}</span>
           </button>
           <button
             className={`${styles.menuItem} ${styles.menuItemDark} ${mode === "dark" ? styles.menuItemActive : ""}`}
@@ -204,23 +206,35 @@ const DraggableFloatMenu = () => {
               setMode("dark");
               setOpen(false);
             }}
-            title="Dark theme"
+            title={t("floatMenu.dark")}
           >
             <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
               <path d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79z" />
             </svg>
-            <span>Dark</span>
+            <span>{t("floatMenu.dark")}</span>
+          </button>
+          <button
+            className={`${styles.menuItem} ${styles.menuItemLang}`}
+            onClick={() => {
+              toggleLocale();
+              setOpen(false);
+            }}
+            title={t("floatMenu.language")}
+          >
+            <GlobalOutlined />
+            {/* 显示切换后的目标语言，点击即切到该语言 */}
+            <span>{locale === "zh" ? "English" : "中文"}</span>
           </button>
           <a
             className={`${styles.menuItem} ${styles.menuItemDoc}`}
             href="https://your-feedback-doc.example.com"
             target="_blank"
             rel="noopener noreferrer"
-            title="反馈文档"
+            title={t("floatMenu.feedback")}
             onClick={() => setOpen(false)}
           >
             <FormOutlined />
-            <span>FeedBack</span>
+            <span>{t("floatMenu.feedback")}</span>
           </a>
         </div>
       </div>

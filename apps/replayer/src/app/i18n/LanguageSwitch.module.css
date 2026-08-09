@@ -1,0 +1,57 @@
+.switch {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  z-index: 1000;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 34px;
+  padding: 0 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  background: rgba(255, 255, 255, 0.85);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  color: #1a1a1a;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1;
+  cursor: pointer;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+  transition: background 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.switch:hover {
+  background: #fff;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.14);
+}
+
+.switch:active {
+  transform: translateY(0);
+}
+
+/* inline 变体：不固定定位，跟随父容器（页面头部） */
+.inline {
+  position: static;
+  top: auto;
+  right: auto;
+}
+
+.icon {
+  font-size: 15px;
+  line-height: 1;
+}
+
+/* 深色背景页面可通过 data-theme="dark" 或自定义类覆盖 */
+:global([data-theme="dark"]) .switch {
+  border-color: rgba(255, 255, 255, 0.18);
+  background: rgba(30, 30, 30, 0.8);
+  color: #f0f0f0;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+}
+
+:global([data-theme="dark"]) .switch:hover {
+  background: rgba(40, 40, 40, 0.95);
+}

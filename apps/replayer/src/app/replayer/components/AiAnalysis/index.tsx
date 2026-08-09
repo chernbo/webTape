@@ -5,6 +5,9 @@ import { Button, Drawer, Progress } from 'antd'
 import { RobotOutlined } from '@ant-design/icons'
 import styles from './index.module.css'
 import ReactMarkdown from 'react-markdown'
+import { useI18n } from '../../../i18n'
+
+type TFn = (key: string, vars?: Record<string, string | number>) => string
 
 interface AiAnalysisProps {
   events: any[]
@@ -68,7 +71,10 @@ function chunkBySize(lines: string[], limit: number): string[][] {
 
 // 调用 Workflow API —— 走服务端代理 /api/ai/analyze
 // API Key 只在服务端 (见 api/ai/analyze/route.ts), 不暴露到浏览器 bundle.
-async function callWorkflow(payload: Record<string, string>): Promise<string> {
+async function callWorkflow(
+  payload: Record<string, string>,
+  t: TFn,
+): Promise<string> {
   const resp = await fetch('/api/ai/analyze', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -76,15 +82,16 @@ async function callWorkflow(payload: Record<string, string>): Promise<string> {
   })
   const data = await resp.json().catch(() => null)
   if (!resp.ok || !data?.ok) {
-    throw new Error(data?.error || `AI 分析请求失败: ${resp.status}`)
+    throw new Error(data?.error || t('ai.requestFailedStatus', { status: resp.status }))
   }
-  return (data.result as string) ?? '（无返回内容）'
+  return (data.result as string) ?? t('ai.emptyResult')
 }
 
 export default function AiAnalysis({
   events,
   rrwebPlayerInstance,
 }: AiAnalysisProps) {
+  const { t } = useI18n()
   const [open, setOpen] = useState(false)
   const [loading, setLoading] = useState(false)
   const [progress, setProgress] = useState(0)
@@ -109,12 +116,14 @@ export default function AiAnalysis({
 
       // 逐片分析网络请求
       for (let i = 0; i < networkChunks.length; i++) {
-        setProgressTip(`分析网络请求 ${i + 1}/${networkChunks.length}...`)
+        setProgressTip(
+          t('ai.analyzingNetwork', { current: i + 1, total: networkChunks.length }),
+        )
         const res = await callWorkflow({
           network_requests_info: networkChunks[i].join('\n'),
           console_logs_info: '（本片仅分析网络请求）',
           dom_nodes_info: domInfo,
-        })
+        }, t)
         partialResults.push(`【网络请求片段 ${i + 1}】\n${res}`)
         done++
         setProgress(Math.round((done / (totalChunks + 1)) * 100))
@@ -122,32 +131,36 @@ export default function AiAnalysis({
 
       // 逐片分析控制台日志
       for (let i = 0; i < consoleChunks.length; i++) {
-        setProgressTip(`分析控制台日志 ${i + 1}/${consoleChunks.length}...`)
+        setProgressTip(
+          t('ai.analyzingConsole', { current: i + 1, total: consoleChunks.length }),
+        )
         const res = await callWorkflow({
           network_requests_info: '（本片仅分析控制台日志）',
           console_logs_info: consoleChunks[i].join('\n'),
           dom_nodes_info: domInfo,
-        })
+        }, t)
         partialResults.push(`【控制台日志片段 ${i + 1}】\n${res}`)
         done++
         setProgress(Math.round((done / (totalChunks + 1)) * 100))
       }
 
       // 最终汇总
-      setProgressTip('汇总分析结果...')
+      setProgressTip(t('ai.summarizing'))
       const summary = await callWorkflow({
         network_requests_info: '（以下是各片段的分析结果，请综合总结）',
         console_logs_info: partialResults
           .join('\n\n---\n\n')
           .slice(0, CHUNK_CHAR_LIMIT * 2),
         dom_nodes_info: `${domInfo}，请给出最终总结和改进建议`,
-      })
+      }, t)
 
       setProgress(100)
       setResult(summary)
     } catch (e) {
       setResult(
-        `请求失败：${e instanceof Error ? e.message : '请检查网络或 API Key 配置'}`,
+        t('ai.requestFailed', {
+          msg: e instanceof Error ? e.message : t('ai.checkNetworkOrKey'),
+        }),
       )
     } finally {
       setLoading(false)
@@ -173,17 +186,17 @@ export default function AiAnalysis({
         onClick={handleAnalyze}
         className={styles.btn}
       >
-        AI 分析
+        {t('ai.button')}
       </Button>
 
       <Drawer
-        title="AI 录制分析"
+        title={t('ai.drawerTitle')}
         open={open}
         mask={false}
         onClose={() => setOpen(false)}
         extra={
           <Button size="small" onClick={handleReAnalyze} disabled={loading}>
-            重新分析
+            {t('ai.reAnalyze')}
           </Button>
         }
       >
@@ -197,7 +210,7 @@ export default function AiAnalysis({
             {result ? (
               <ReactMarkdown>{result}</ReactMarkdown>
             ) : (
-              <span className={styles.placeholder}>点击「重新分析」开始</span>
+              <span className={styles.placeholder}>{t('ai.placeholderStart')}</span>
             )}
           </div>
         )}

@@ -5,6 +5,7 @@ import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import useEvents from "../../hooks/useEvents";
 import styles from "./index.module.css";
+import { useI18n } from "../../../i18n";
 
 dayjs.extend(utc);
 
@@ -23,6 +24,7 @@ const RRwebTimeLine = ({
   // 左侧扩展槽：渲染在倍速按钮后、hint(margin-left:auto) 前
   extraLeft?: React.ReactNode;
 }) => {
+  const { t } = useI18n();
   const [percent, setPercent] = useState(0);
   const [speed, setSpeed] = useState(1);
   const [isPlaying, setIsPlaying] = useState(true);
@@ -317,7 +319,7 @@ const RRwebTimeLine = ({
               key={s}
               className={`${styles.speedBtn} ${speed === s ? styles.speedBtnActive : ""} ${styles.tooltip}`}
               onClick={() => handleSpeedChange(s)}
-              data-tooltip={`${s}× speed`}
+              data-tooltip={t("timeline.speed", { n: s })}
             >
               {s}×
             </button>
@@ -328,11 +330,11 @@ const RRwebTimeLine = ({
 
         {/* 快捷键提示 */}
         <span className={styles.hint}>
-          <span className={styles.tooltip} data-tooltip="Rewind 4s">←</span>
+          <span className={styles.tooltip} data-tooltip={t("timeline.rewind4s")}>←</span>
           {" / "}
-          <span className={styles.tooltip} data-tooltip="Forward 4s">→</span>
+          <span className={styles.tooltip} data-tooltip={t("timeline.forward4s")}>→</span>
           {" 4s · "}
-          <span className={styles.tooltip} data-tooltip="Play / Pause">Shift+Space</span>
+          <span className={styles.tooltip} data-tooltip={t("timeline.playPause")}>Shift+Space</span>
         </span>
         {extra && <span className={styles.extraSlot}>{extra}</span>}
       </div>

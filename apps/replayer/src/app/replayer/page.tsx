@@ -25,8 +25,10 @@ import useEvents from "./hooks/useEvents";
 import useAnnotations from "./hooks/useAnnotations";
 import type { AnnotationColor } from "./types/annotation";
 import { MessageOutlined } from "@ant-design/icons";
+import { useI18n } from "../i18n";
 
 const ReplayPageClient = () => {
+  const { t } = useI18n();
   // useSearchParams 属于"只能在浏览器环境里真正拿到值"的东西，区分服务端渲染需要包裹Suspense
   const searchParams = useSearchParams();
 
@@ -241,7 +243,7 @@ const ReplayPageClient = () => {
           type="button"
           className={styles.sidebarToggle}
           onClick={() => setSidebarOpen(true)}
-          title="展开批注侧边栏"
+          title={t("replayer.expandSidebar")}
         >
           <MessageOutlined />
           {annotations.length > 0 && (
@@ -260,6 +262,7 @@ const ReplayPageClient = () => {
 
 export default function Page() {
   return (
+    // LocaleProvider 已在 root layout 全局挂载，这里只需主题 + antd App
     <ThemeProvider>
       <App>
         <Suspense fallback={<Skeleton />}>

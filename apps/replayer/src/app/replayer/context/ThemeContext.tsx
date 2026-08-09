@@ -2,6 +2,9 @@
 
 import { createContext, useContext, useEffect, useState } from "react";
 import { ConfigProvider, theme as antdTheme } from "antd";
+import zhCN from "antd/locale/zh_CN";
+import enUS from "antd/locale/en_US";
+import { useI18n } from "../../i18n";
 
 type ThemeMode = "dark" | "light";
 
@@ -19,6 +22,8 @@ export const useTheme = () => useContext(ThemeContext);
 
 export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
   const [mode, setMode] = useState<ThemeMode>("light");
+  // antd 内置组件（分页、Empty、DatePicker 等）文案随全局语言切换
+  const { locale } = useI18n();
 
   // 同步 data-theme 到 <html>，这样 AntD Drawer / Modal 等走 body 的 portal
   // 也能继承到 [data-theme] 下的 CSS 变量
@@ -29,6 +34,7 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
   return (
     <ThemeContext.Provider value={{ mode, setMode }}>
       <ConfigProvider
+        locale={locale === "zh" ? zhCN : enUS}
         theme={{
           algorithm:
             mode === "dark"

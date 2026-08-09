@@ -8,17 +8,18 @@ import numbro from "numbro";
 import { CONSOLE_TAG, safeParseJson, toShowJson } from "../utils";
 import { Input } from "antd";
 import styles from "./index.module.css";
+import { useI18n } from "../../../i18n";
 
 type LogLevel = "all" | "log" | "warn" | "error" | "info" | "debug";
 
-// 顶部 tab 筛选项，对应 rrweb console plugin 的 level 字段
-const LEVEL_TABS: { key: LogLevel; label: string }[] = [
-  { key: "all", label: "All" },
-  { key: "log", label: "Logs" },
-  { key: "warn", label: "Warnings" },
-  { key: "error", label: "Errors" },
-  { key: "info", label: "Info" },
-  { key: "debug", label: "Debug" },
+// 顶部 tab 筛选项，对应 rrweb console plugin 的 level 字段；label 走 i18n key
+const LEVEL_TABS: { key: LogLevel; labelKey: string }[] = [
+  { key: "all", labelKey: "console.tabAll" },
+  { key: "log", labelKey: "console.tabLog" },
+  { key: "warn", labelKey: "console.tabWarn" },
+  { key: "error", labelKey: "console.tabError" },
+  { key: "info", labelKey: "console.tabInfo" },
+  { key: "debug", labelKey: "console.tabDebug" },
 ];
 
 interface ConsoleLogPanelProps {
@@ -30,6 +31,7 @@ const ConsoleLogPanel: FC<ConsoleLogPanelProps> = ({
   sourceId,
   rrwebPlayerInstance,
 }) => {
+  const { t } = useI18n();
   const [consoleLogs, setConsoleLogs] = useState<any[]>([]);
   const [activeLevel, setActiveLevel] = useState<LogLevel>("all");
   const [filterText, setFilterText] = useState("");
@@ -116,13 +118,13 @@ const ConsoleLogPanel: FC<ConsoleLogPanelProps> = ({
       <div className={styles.toolbar}>
         <Input
           className={styles.filterInput}
-          placeholder="Filter log entries"
+          placeholder={t("console.filterPlaceholder")}
           value={filterText}
           onChange={(e) => setFilterText(e.target.value)}
           allowClear
         />
         <div className={styles.levelTabs}>
-          {LEVEL_TABS.map(({ key, label }) => {
+          {LEVEL_TABS.map(({ key, labelKey }) => {
             const count = key === "all" ? consoleLogs.length : (levelCounts[key] ?? 0);
             return (
               <button
@@ -130,7 +132,7 @@ const ConsoleLogPanel: FC<ConsoleLogPanelProps> = ({
                 className={`${styles.levelBtn} ${activeLevel === key ? styles.levelBtnActive : ""} ${key === "error" && count > 0 ? styles.levelBtnError : ""} ${key === "warn" && count > 0 ? styles.levelBtnWarn : ""}`}
                 onClick={() => setActiveLevel(key)}
               >
-                {label}
+                {t(labelKey)}
                 {count > 0 && <span className={styles.badge}>{count}</span>}
               </button>
             );
@@ -141,7 +143,7 @@ const ConsoleLogPanel: FC<ConsoleLogPanelProps> = ({
       {/* log list */}
       <div className={styles.logList} style={{ height: observeRect.height - 72 }}>
         {filteredLogs.length === 0 ? (
-          <div className={styles.empty}>No console logs</div>
+          <div className={styles.empty}>{t("console.empty")}</div>
         ) : (
           filteredLogs.map((row, i) => {
             const level: string = row.data.payload.level;

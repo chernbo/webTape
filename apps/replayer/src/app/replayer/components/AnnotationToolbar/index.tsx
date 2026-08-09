@@ -8,6 +8,7 @@ import {
   getAnnotationBorderColor,
 } from "../../types/annotation";
 import styles from "./style.module.scss";
+import { useI18n } from "../../../i18n";
 
 interface Props {
   currentColor: AnnotationColor;
@@ -15,6 +16,7 @@ interface Props {
 }
 
 const AnnotationToolbar: FC<Props> = ({ currentColor, onColorClick }) => {
+  const { t } = useI18n();
   return (
     <div className={styles.toolbar}>
       {ANNOTATION_COLOR_LIST.map((c) => {
@@ -34,7 +36,7 @@ const AnnotationToolbar: FC<Props> = ({ currentColor, onColorClick }) => {
           />
         );
       })}
-      <span className={styles.hint}>点击画面任意位置标注</span>
+      <span className={styles.hint}>{t("annotation.toolbarHint")}</span>
     </div>
   );
 };

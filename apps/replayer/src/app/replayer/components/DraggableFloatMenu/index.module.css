@@ -90,7 +90,7 @@
 }
 
 .menuOpen {
-  max-height: 200px;
+  max-height: 260px;
   opacity: 1;
   pointer-events: auto;
   transform: translateY(0) scale(1);
@@ -158,6 +158,17 @@
   color: #fff;
   border-color: rgba(255, 255, 255, 0.2);
   box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.08), 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+/* 语言切换按钮：随主题适配（复用 root 的 --btn-* 变量） */
+.menuItemLang {
+  background: var(--btn-bg);
+  color: var(--btn-color);
+  border-color: var(--btn-border);
+}
+
+.menuItemLang:hover {
+  background: var(--btn-bg-hover);
 }
 
 /* 反馈文档按钮：蓝色系 */

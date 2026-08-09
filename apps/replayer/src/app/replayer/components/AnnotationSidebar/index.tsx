@@ -10,6 +10,7 @@ import {
   getAnnotationTextColor,
 } from "../../types/annotation";
 import styles from "./style.module.scss";
+import { useI18n } from "../../../i18n";
 
 interface Props {
   open: boolean;
@@ -37,6 +38,7 @@ const AnnotationSidebar: FC<Props> = ({
   onUpdate,
   onRemove,
 }) => {
+  const { t } = useI18n();
   const listRef = useRef<HTMLDivElement>(null);
 
   // 当 activeId 变动，滚动到对应卡片
@@ -50,7 +52,7 @@ const AnnotationSidebar: FC<Props> = ({
 
   return (
     <Drawer
-      title="ANNOTATIONS & COMMENTS"
+      title={t("annotation.sidebarTitle")}
       placement="right"
       onClose={onClose}
       open={open}
@@ -63,7 +65,7 @@ const AnnotationSidebar: FC<Props> = ({
     >
       <div ref={listRef} className={styles.list}>
         {annotations.length === 0 ? (
-          <Empty description="No annotations yet" />
+          <Empty description={t("annotation.emptyDesc")} />
         ) : (
           annotations.map((a) => (
             <div
@@ -93,13 +95,13 @@ const AnnotationSidebar: FC<Props> = ({
                     e.stopPropagation();
                     onRemove(a.id);
                   }}
-                  aria-label="delete"
+                  aria-label={t("annotation.delete")}
                 >
                   <DeleteOutlined />
                 </button>
               </div>
               <Input.TextArea
-                placeholder="Describe the issue..."
+                placeholder={t("annotation.commentPlaceholder")}
                 // 使用 defaultValue（非受控）避免每次键入触发父组件 re-render；
                 // 最终值在 onBlur 一次性同步回 annotations
                 defaultValue={a.comment}

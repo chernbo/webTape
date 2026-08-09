@@ -1,6 +1,5 @@
 'use client'
 
-import Link from 'next/link'
 import { useState, useEffect, useCallback } from 'react'
 import {
   Tabs,
@@ -24,7 +23,6 @@ import {
   Tooltip,
 } from 'antd'
 import {
-  ArrowLeftOutlined,
   VideoCameraOutlined,
   HistoryOutlined,
   AlertOutlined,
@@ -33,6 +31,7 @@ import {
   ClockCircleOutlined,
 } from '@ant-design/icons'
 import styles from './page.module.css'
+import { useI18n, LanguageSwitch } from '../i18n'
 
 const { TextArea } = Input
 
@@ -64,10 +63,11 @@ function getWebTape() {
 
 // ─── 状态徽章 ──────────────────────────────────────
 function StateBadge({ state }: { state: RecordingState }) {
+  const { t } = useI18n()
   const cfg = {
-    finished: { cls: styles.stateFinished, dot: '#52c41a', label: '待机中' },
-    recording: { cls: styles.stateRecording, dot: '#ff4d4f', label: '录制中' },
-    uploading: { cls: styles.stateUploading, dot: '#1890ff', label: '上传中' },
+    finished: { cls: styles.stateFinished, dot: '#52c41a', label: t('experience.stateIdle') },
+    recording: { cls: styles.stateRecording, dot: '#ff4d4f', label: t('experience.stateRecording') },
+    uploading: { cls: styles.stateUploading, dot: '#1890ff', label: t('experience.stateUploading') },
   }[state]
   return (
     <span className={`${styles.stateTag} ${cfg.cls}`}>
@@ -93,14 +93,15 @@ function RecordPanel({
   onDiscard: () => void
   onReportRecent: () => void
 }) {
+  const { t } = useI18n()
   return (
     <div className={styles.panelCard}>
-      <div className={styles.panelTitle}>SDK 状态</div>
+      <div className={styles.panelTitle}>{t('experience.panelSdkState')}</div>
       <StateBadge state={state} />
 
       <Divider style={{ margin: '8px 0' }} />
 
-      <div className={styles.panelTitle}>手动录制</div>
+      <div className={styles.panelTitle}>{t('experience.panelManualRecord')}</div>
       <Space orientation="vertical" style={{ width: '100%' }}>
         <Button
           type="primary"
@@ -109,7 +110,7 @@ function RecordPanel({
           disabled={state !== 'finished'}
           onClick={onManualStart}
         >
-          开始录制
+          {t('experience.btnStart')}
         </Button>
         <Button
           icon={<SendOutlined />}
@@ -117,7 +118,7 @@ function RecordPanel({
           disabled={state !== 'recording'}
           onClick={onManualStop}
         >
-          停止并提交
+          {t('experience.btnStopSubmit')}
         </Button>
         <Button
           danger
@@ -125,28 +126,28 @@ function RecordPanel({
           disabled={state !== 'recording'}
           onClick={onDiscard}
         >
-          丢弃录制
+          {t('experience.btnDiscard')}
         </Button>
       </Space>
 
       <Divider style={{ margin: '8px 0' }} />
 
-      <div className={styles.panelTitle}>回溯录制</div>
-      <Tooltip title="一键上传最近 60s 的后台录制快照">
+      <div className={styles.panelTitle}>{t('experience.panelBacktrack')}</div>
+      <Tooltip title={t('experience.tooltipReportRecent')}>
         <Button
           icon={<HistoryOutlined />}
           block
           disabled={state !== 'finished'}
           onClick={onReportRecent}
         >
-          上报最近 60s
+          {t('experience.btnReportRecent')}
         </Button>
       </Tooltip>
 
       {result && (
         <div className={styles.resultBox}>
           <div style={{ marginBottom: 6, fontWeight: 600, color: '#389e0d' }}>
-            ✅ 上传成功
+            ✅ {t('experience.uploadSuccess')}
           </div>
           <Button
             type="link"
@@ -154,7 +155,7 @@ function RecordPanel({
             style={{ padding: 0 }}
             onClick={() => window.open(result.url, '_blank', 'noopener')}
           >
-            → 查看回放
+            → {t('experience.viewReplay')}
           </Button>
           <div
             style={{ color: '#8c8c8c', marginTop: 4, wordBreak: 'break-all' }}
@@ -169,6 +170,7 @@ function RecordPanel({
 
 // ─── 主组件 ────────────────────────────────────────
 export default function ExperiencePage() {
+  const { t } = useI18n()
   const [sdkState, setSdkState] = useState<RecordingState>('finished')
   const [sdkReady, setSdkReady] = useState(false)
   const [lastResult, setLastResult] = useState<RecordingResult | null>(null)
@@ -181,11 +183,13 @@ export default function ExperiencePage() {
     const tryInit = () => {
       const tape = getWebTape()
       if (!tape) return false
-      // 上传地址跟随当前 origin, 避免生产环境上传到 localhost
+      // 上传地址跟随当前 origin（体验页与回放服务同源），避免上传到 SDK 内置的 localhost 默认值
+      // Upload URL follows the current origin (this page is same-origin with the replayer),
+      // so it never falls back to the SDK's built-in localhost default.
       tape.configure({
         backgroundWindowMs: 60_000,
         errorPrompt: true,
-        _apiBase: `${window.location.origin}/api/replayer`,
+        serverUrl: `${window.location.origin}/api/replayer`,
       })
       unsub = tape.onStateChange((s) => {
         if (!cancelled) setSdkState(s)
@@ -212,12 +216,12 @@ export default function ExperiencePage() {
   const handleStart = useCallback(async () => {
     const tape = getWebTape()
     if (!tape) {
-      message.warning('SDK 未加载')
+      message.warning(t('experience.msgSdkNotLoaded'))
       return
     }
     setLastResult(null)
     await tape.startRecord()
-  }, [])
+  }, [t])
 
   const handleStop = useCallback(async () => {
     const tape = getWebTape()
@@ -225,14 +229,14 @@ export default function ExperiencePage() {
     const r = await tape.stopRecord()
     if (r) {
       setLastResult(r)
-      message.success('上传成功')
-    } else message.error('上传失败')
-  }, [])
+      message.success(t('experience.msgUploadSuccess'))
+    } else message.error(t('experience.msgUploadFailed'))
+  }, [t])
 
   const handleDiscard = useCallback(() => {
     getWebTape()?.discardRecord()
-    message.info('已丢弃')
-  }, [])
+    message.info(t('experience.msgDiscarded'))
+  }, [t])
 
   const handleReportRecent = useCallback(async () => {
     const tape = getWebTape()
@@ -241,9 +245,9 @@ export default function ExperiencePage() {
     const r = await tape.reportRecent()
     if (r) {
       setLastResult(r)
-      message.success('回溯上传成功')
-    } else message.info('暂无可回溯录制内容')
-  }, [])
+      message.success(t('experience.msgBacktrackSuccess'))
+    } else message.info(t('experience.msgNoBacktrack'))
+  }, [t])
 
   const commonPanel = (
     <RecordPanel
@@ -260,10 +264,8 @@ export default function ExperiencePage() {
   const ManualTab = (
     <div className={styles.tabContent}>
       <div className={styles.demoDesc}>
-        <strong>手动录制</strong>
-        ：点击右侧「开始录制」，在下方表单中进行各种操作，
-        完成后「停止并提交」，获得可分享的回放链接。rrweb 会完整录制所有 DOM
-        变更、输入事件和网络请求。
+        <strong>{t('experience.manualDescTitle')}</strong>
+        {t('experience.manualDesc')}
       </div>
       <div className={styles.demoGrid}>
         <div className={styles.formCard}>
@@ -272,32 +274,32 @@ export default function ExperiencePage() {
             labelCol={{ span: 6 }}
             wrapperCol={{ span: 16 }}
           >
-            <Form.Item label="姓名">
-              <Input placeholder="请输入姓名" />
+            <Form.Item label={t('experience.fName')}>
+              <Input placeholder={t('experience.fNamePh')} />
             </Form.Item>
-            <Form.Item label="国籍" required>
+            <Form.Item label={t('experience.fNationality')} required>
               <Select
-                placeholder="请选择"
+                placeholder={t('experience.fSelectPh')}
                 options={[
-                  { value: 'cn', label: '中国' },
-                  { value: 'us', label: '美国' },
-                  { value: 'sg', label: '新加坡' },
-                  { value: 'hk', label: '香港' },
+                  { value: 'cn', label: t('experience.optCn') },
+                  { value: 'us', label: t('experience.optUs') },
+                  { value: 'sg', label: t('experience.optSg') },
+                  { value: 'hk', label: t('experience.optHk') },
                 ]}
               />
             </Form.Item>
-            <Form.Item label="证件类型" required>
+            <Form.Item label={t('experience.fIdType')} required>
               <Select
                 mode="multiple"
-                placeholder="可多选"
+                placeholder={t('experience.fMultiPh')}
                 options={[
-                  { value: 'passport', label: '护照' },
-                  { value: 'id', label: '身份证' },
-                  { value: 'hkid', label: '港澳通行证' },
+                  { value: 'passport', label: t('experience.optPassport') },
+                  { value: 'id', label: t('experience.optId') },
+                  { value: 'hkid', label: t('experience.optHkid') },
                 ]}
               />
             </Form.Item>
-            <Form.Item label="资产规模">
+            <Form.Item label={t('experience.fAssets')}>
               <Space.Compact>
                 <InputNumber
                   style={{ width: 180 }}
@@ -305,54 +307,59 @@ export default function ExperiencePage() {
                   step={10000}
                   placeholder="0"
                 />
-                <Input style={{ width: 60 }} disabled value="元" />
+                <Input style={{ width: 60 }} disabled value={t('experience.unitYuan')} />
               </Space.Compact>
             </Form.Item>
-            <Form.Item label="风险测评">
+            <Form.Item label={t('experience.fRisk')}>
               <Slider
                 marks={{
-                  0: '保守',
-                  25: '稳健',
-                  50: '平衡',
-                  75: '积极',
-                  100: '进取',
+                  0: t('experience.riskConservative'),
+                  25: t('experience.riskSteady'),
+                  50: t('experience.riskBalanced'),
+                  75: t('experience.riskActive'),
+                  100: t('experience.riskAggressive'),
                 }}
                 defaultValue={25}
               />
             </Form.Item>
-            <Form.Item label="开启通知">
+            <Form.Item label={t('experience.fNotify')}>
               <Switch defaultChecked />
             </Form.Item>
-            <Form.Item label="投资偏好">
+            <Form.Item label={t('experience.fInvestPref')}>
               <Radio.Group defaultValue="stock">
-                <Radio value="stock">股票</Radio>
-                <Radio value="fund">基金</Radio>
-                <Radio value="bond">债券</Radio>
+                <Radio value="stock">{t('experience.optStock')}</Radio>
+                <Radio value="fund">{t('experience.optFund')}</Radio>
+                <Radio value="bond">{t('experience.optBond')}</Radio>
               </Radio.Group>
             </Form.Item>
-            <Form.Item label="市场" required>
+            <Form.Item label={t('experience.fMarket')} required>
               <Radio.Group defaultValue="us" buttonStyle="solid">
-                <Radio.Button value="us">美股</Radio.Button>
-                <Radio.Button value="hk">港股</Radio.Button>
-                <Radio.Button value="a">A股</Radio.Button>
+                <Radio.Button value="us">{t('experience.optUsStock')}</Radio.Button>
+                <Radio.Button value="hk">{t('experience.optHkStock')}</Radio.Button>
+                <Radio.Button value="a">{t('experience.optAStock')}</Radio.Button>
               </Radio.Group>
             </Form.Item>
-            <Form.Item label="交易权限">
+            <Form.Item label={t('experience.fTradePerm')}>
               <Checkbox.Group
-                options={['现货', '融资', '期权', '期货']}
-                defaultValue={['现货']}
+                options={[
+                  t('experience.permSpot'),
+                  t('experience.permMargin'),
+                  t('experience.permOption'),
+                  t('experience.permFuture'),
+                ]}
+                defaultValue={[t('experience.permSpot')]}
               />
             </Form.Item>
-            <Form.Item label="服务评分">
+            <Form.Item label={t('experience.fRate')}>
               <Rate allowHalf defaultValue={3.5} />
             </Form.Item>
-            <Form.Item label="备注">
-              <TextArea rows={3} placeholder="其他说明..." />
+            <Form.Item label={t('experience.fRemark')}>
+              <TextArea rows={3} placeholder={t('experience.fRemarkPh')} />
             </Form.Item>
-            <Form.Item label="生效日期">
+            <Form.Item label={t('experience.fEffectiveDate')}>
               <DatePicker style={{ width: '100%' }} />
             </Form.Item>
-            <Form.Item label="提醒时间">
+            <Form.Item label={t('experience.fRemindTime')}>
               <TimePicker style={{ width: '100%' }} format="HH:mm" />
             </Form.Item>
             <Form.Item wrapperCol={{ offset: 6 }}>
@@ -360,11 +367,11 @@ export default function ExperiencePage() {
                 <Button
                   type="primary"
                   icon={<SendOutlined />}
-                  onClick={() => message.success('表单提交成功（演示）')}
+                  onClick={() => message.success(t('experience.msgFormSubmitted'))}
                 >
-                  提交开户
+                  {t('experience.btnSubmitAccount')}
                 </Button>
-                <Button>重置</Button>
+                <Button>{t('experience.btnReset')}</Button>
               </Space>
             </Form.Item>
           </Form>
@@ -378,10 +385,10 @@ export default function ExperiencePage() {
   const RecentTab = (
     <div className={styles.tabContent}>
       <div className={styles.demoDesc}>
-        <strong>回溯录制（最近 60 秒）</strong>：SDK 在后台
-        <strong>持续录制</strong>最近 60 秒的滑动窗口。
-        无需手动开录，直接在下方进行操作，然后点「上报最近
-        60s」即可获得回放链接， 适合"发现问题再上报"的场景。
+        <strong>{t('experience.recentDescTitle')}</strong>
+        {t('experience.recentDescPart1')}
+        <strong>{t('experience.recentDescStrong')}</strong>
+        {t('experience.recentDescPart2')}
       </div>
       <div className={styles.demoGrid}>
         <div className={styles.formCard}>
@@ -389,8 +396,8 @@ export default function ExperiencePage() {
             type="info"
             showIcon
             icon={<ClockCircleOutlined />}
-            title="后台正在持续录制中"
-            description="SDK 会自动维护最近 60 秒的录制缓冲，当前页面打开后即已开始。操作下方表单后直接上报即可。"
+            title={t('experience.recentAlertTitle')}
+            description={t('experience.recentAlertDesc')}
             style={{ marginBottom: 20 }}
           />
           <Form
@@ -398,37 +405,37 @@ export default function ExperiencePage() {
             labelCol={{ span: 7 }}
             wrapperCol={{ span: 15 }}
           >
-            <Form.Item label="账号类型">
+            <Form.Item label={t('experience.fAccountType')}>
               <Radio.Group defaultValue="cash" buttonStyle="solid">
-                <Radio.Button value="cash">现金账户</Radio.Button>
-                <Radio.Button value="margin">融资账户</Radio.Button>
-                <Radio.Button value="ira">IRA</Radio.Button>
+                <Radio.Button value="cash">{t('experience.optCash')}</Radio.Button>
+                <Radio.Button value="margin">{t('experience.optMarginAcc')}</Radio.Button>
+                <Radio.Button value="ira">{t('experience.optIra')}</Radio.Button>
               </Radio.Group>
             </Form.Item>
-            <Form.Item label="标的代码">
+            <Form.Item label={t('experience.fSymbol')}>
               <Space.Compact>
                 <Input style={{ width: 40 }} disabled value="$" />
-                <Input placeholder="如 AAPL" />
+                <Input placeholder={t('experience.fSymbolPh')} />
               </Space.Compact>
             </Form.Item>
-            <Form.Item label="方向">
+            <Form.Item label={t('experience.fDirection')}>
               <Radio.Group defaultValue="buy">
-                <Radio value="buy">买入</Radio>
-                <Radio value="sell">卖出</Radio>
-                <Radio value="short">做空</Radio>
+                <Radio value="buy">{t('experience.optBuy')}</Radio>
+                <Radio value="sell">{t('experience.optSell')}</Radio>
+                <Radio value="short">{t('experience.optShort')}</Radio>
               </Radio.Group>
             </Form.Item>
-            <Form.Item label="委托数量">
+            <Form.Item label={t('experience.fQty')}>
               <Space.Compact>
                 <InputNumber
                   min={1}
                   defaultValue={100}
                   style={{ width: 150 }}
                 />
-                <Input style={{ width: 40 }} disabled value="股" />
+                <Input style={{ width: 40 }} disabled value={t('experience.unitShare')} />
               </Space.Compact>
             </Form.Item>
-            <Form.Item label="委托价格">
+            <Form.Item label={t('experience.fPrice')}>
               <Space.Compact>
                 <Input style={{ width: 40 }} disabled value="$" />
                 <InputNumber
@@ -439,26 +446,26 @@ export default function ExperiencePage() {
                 />
               </Space.Compact>
             </Form.Item>
-            <Form.Item label="有效期">
+            <Form.Item label={t('experience.fValidity')}>
               <Select
                 defaultValue="day"
                 style={{ width: 200 }}
                 options={[
-                  { value: 'day', label: '当日有效' },
-                  { value: 'gtc', label: '撤销前有效 (GTC)' },
-                  { value: 'ioc', label: '立即成交否则取消 (IOC)' },
+                  { value: 'day', label: t('experience.optDay') },
+                  { value: 'gtc', label: t('experience.optGtc') },
+                  { value: 'ioc', label: t('experience.optIoc') },
                 ]}
               />
             </Form.Item>
-            <Form.Item label="备注">
-              <TextArea rows={2} placeholder="备注信息..." />
+            <Form.Item label={t('experience.fRemark')}>
+              <TextArea rows={2} placeholder={t('experience.fRemarkPh2')} />
             </Form.Item>
             <Form.Item wrapperCol={{ offset: 7 }}>
               <Button
                 type="primary"
-                onClick={() => message.success('委托已发出（演示）')}
+                onClick={() => message.success(t('experience.msgOrderSent'))}
               >
-                提交委托
+                {t('experience.btnSubmitOrder')}
               </Button>
             </Form.Item>
           </Form>
@@ -472,17 +479,16 @@ export default function ExperiencePage() {
   const SentinelTab = (
     <div className={styles.tabContent}>
       <div className={styles.demoDesc}>
-        <strong>哨兵模式（errorPrompt）</strong>：检测到 HTTP
-        错误（4xx/5xx）时， SDK 自动弹出提示引导用户<strong>一键上报</strong>
-        最近 60 秒的录制现场，
-        无需用户提前开录。点击下方按钮触发不同错误，观察右下角 FAB 附近的 toast
-        弹出。
+        <strong>{t('experience.sentinelDescTitle')}</strong>
+        {t('experience.sentinelDescPart1')}
+        <strong>{t('experience.sentinelDescStrong')}</strong>
+        {t('experience.sentinelDescPart2')}
       </div>
       <div className={styles.demoGrid}>
         <div className={styles.sentinelDesc + ' ' + styles.formCard}>
           <div className={styles.panelTitle} style={{ marginBottom: 12 }}>
             <ThunderboltOutlined style={{ marginRight: 6, color: '#fa8c16' }} />
-            触发错误请求（演示用）
+            {t('experience.triggerErrTitle')}
           </div>
           <div className={styles.errBtnGroup} style={{ marginBottom: 20 }}>
             {([500, 503, 502, 408, 404] as number[]).map((code) => (
@@ -494,10 +500,10 @@ export default function ExperiencePage() {
                   const xhr = new XMLHttpRequest()
                   xhr.open('GET', `/api/test-error?status=${code}`)
                   xhr.send()
-                  message.info(`已发送 ${code} 请求，观察右下角 FAB 区域`)
+                  message.info(t('experience.msgErrSent', { code }))
                 }}
               >
-                触发 {code}
+                {t('experience.triggerBtn', { code })}
               </Button>
             ))}
           </div>
@@ -505,14 +511,14 @@ export default function ExperiencePage() {
           <Divider />
 
           <div className={styles.panelTitle} style={{ marginBottom: 12 }}>
-            模拟真实业务场景（下方操作会产生正常/异常请求）
+            {t('experience.simulateTitle')}
           </div>
           <Form
             layout="horizontal"
             labelCol={{ span: 7 }}
             wrapperCol={{ span: 15 }}
           >
-            <Form.Item label="提款金额">
+            <Form.Item label={t('experience.fWithdrawAmount')}>
               <Space.Compact>
                 <Input style={{ width: 40 }} disabled value="$" />
                 <InputNumber
@@ -523,20 +529,20 @@ export default function ExperiencePage() {
                 />
               </Space.Compact>
             </Form.Item>
-            <Form.Item label="提款账户">
+            <Form.Item label={t('experience.fWithdrawAccount')}>
               <Select
                 defaultValue="bank1"
                 style={{ width: '100%' }}
                 options={[
-                  { value: 'bank1', label: '工商银行 尾号 1234' },
-                  { value: 'bank2', label: '招商银行 尾号 5678' },
+                  { value: 'bank1', label: t('experience.optBank1') },
+                  { value: 'bank2', label: t('experience.optBank2') },
                 ]}
               />
             </Form.Item>
-            <Form.Item label="验证码">
+            <Form.Item label={t('experience.fVerifyCode')}>
               <Space>
                 <Input
-                  placeholder="请输入 6 位验证码"
+                  placeholder={t('experience.fVerifyCodePh')}
                   style={{ width: 160 }}
                   maxLength={6}
                 />
@@ -547,10 +553,10 @@ export default function ExperiencePage() {
                     xhr.open('POST', `/api/test-error?status=500`)
                     xhr.setRequestHeader('Content-Type', 'application/json')
                     xhr.send(JSON.stringify({ action: 'sendVerifyCode' }))
-                    message.loading('发送中...', 1.5)
+                    message.loading(t('experience.msgSending'), 1.5)
                   }}
                 >
-                  发送验证码
+                  {t('experience.btnSendCode')}
                 </Button>
               </Space>
             </Form.Item>
@@ -563,10 +569,10 @@ export default function ExperiencePage() {
                   xhr.open('POST', `/api/test-error?status=503`)
                   xhr.setRequestHeader('Content-Type', 'application/json')
                   xhr.send(JSON.stringify({ amount: 10000 }))
-                  message.loading('提交中...', 2)
+                  message.loading(t('experience.msgSubmitting'), 2)
                 }}
               >
-                确认提款
+                {t('experience.btnConfirmWithdraw')}
               </Button>
             </Form.Item>
           </Form>
@@ -576,13 +582,13 @@ export default function ExperiencePage() {
           <Alert
             type="warning"
             showIcon
-            title="触发错误后会发生什么？"
+            title={t('experience.sentinelAlertTitle')}
             description={
               <ol style={{ margin: 0, paddingLeft: 20, lineHeight: 2 }}>
-                <li>SDK 拦截到 HTTP 错误响应（状态码 ≥ 400）</li>
-                <li>右下角 FAB 旁弹出 toast：「检测到接口异常，一键上报」</li>
-                <li>点击 toast 中的「一键上报」，自动上传最近 60s 录制现场</li>
-                <li>获得可分享的回放链接</li>
+                <li>{t('experience.sentinelStep1')}</li>
+                <li>{t('experience.sentinelStep2')}</li>
+                <li>{t('experience.sentinelStep3')}</li>
+                <li>{t('experience.sentinelStep4')}</li>
               </ol>
             }
           />
@@ -598,7 +604,7 @@ export default function ExperiencePage() {
       label: (
         <Space>
           <VideoCameraOutlined />
-          手动录制
+          {t('experience.tabManual')}
         </Space>
       ),
       children: ManualTab,
@@ -608,7 +614,7 @@ export default function ExperiencePage() {
       label: (
         <Space>
           <HistoryOutlined />
-          最近回溯
+          {t('experience.tabRecent')}
         </Space>
       ),
       children: RecentTab,
@@ -618,7 +624,7 @@ export default function ExperiencePage() {
       label: (
         <Space>
           <AlertOutlined />
-          哨兵模式
+          {t('experience.tabSentinel')}
         </Space>
       ),
       children: SentinelTab,
@@ -629,26 +635,18 @@ export default function ExperiencePage() {
     <div className={styles.page}>
       {/* 顶部导航 */}
       <div className={styles.header}>
-        <Link href="/" className={styles.headerBack}>
-          <ArrowLeftOutlined />
-          返回首页
-        </Link>
-        <div style={{ width: 1, height: 20, background: '#f0f0f0' }} />
         <div>
-          <h1 className={styles.headerTitle}>Web Tape 体验中心</h1>
-          <p className={styles.headerSub}>
-            端到端演示录制 · 回溯 · 哨兵三大能力
-          </p>
+          <h1 className={styles.headerTitle}>{t('experience.headerTitle')}</h1>
+          <p className={styles.headerSub}>{t('experience.headerSub')}</p>
         </div>
-        {sdkReady ? (
-          <Tag color="green" style={{ marginLeft: 'auto' }}>
-            SDK 已就绪
-          </Tag>
-        ) : (
-          <Tag color="orange" style={{ marginLeft: 'auto' }}>
-            SDK 加载中...
-          </Tag>
-        )}
+        <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: 12 }}>
+          {sdkReady ? (
+            <Tag color="green">{t('experience.sdkReady')}</Tag>
+          ) : (
+            <Tag color="orange">{t('experience.sdkLoading')}</Tag>
+          )}
+          <LanguageSwitch inline />
+        </div>
       </div>
 
       {/* 主体 */}
@@ -678,11 +676,11 @@ export default function ExperiencePage() {
         </div>
       </footer>
 
-      {/* Web Tape SDK */}
+      {/* Web Tape SDK —— 加载已发布的 npm 包 IIFE 产物（默认挂内置 FAB 供体验）
+          load the published npm IIFE build (keeps the built-in FAB for the demo) */}
       {/* eslint-disable-next-line @next/next/no-sync-scripts */}
-      {/* 使用者请替换成自己部署的 web-tape.iife.js CDN 地址 */}
       <script
-        src="https://cdn.jsdelivr.net/gh/chernbo/webTape_SDK@master/dist/web-tape.iife.js"
+        src="https://unpkg.com/@webtapejs/toolbox@0.1.3/dist/web-tape.iife.js"
         async
       />
     </div>

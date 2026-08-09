@@ -2,6 +2,7 @@
 
 import { FC, useEffect, useMemo, useRef, useState } from "react";
 import { Input } from "antd";
+import { useI18n } from "../../../i18n";
 import useLayoutInfo from "../../hooks/useLayoutInfo";
 import useEvents from "../../hooks/useEvents";
 import dayjs from "dayjs";
@@ -29,6 +30,7 @@ const MonitorNetwork: FC<MonitorNetworkProps> = ({
   sourceId,
   rrwebPlayerInstance,
 }) => {
+  const { t } = useI18n();
   const [networkEvents, setNetworkEvents] = useState<any[]>([]);
   const [filterText, setFilterText] = useState("");
   const [expandedKey, setExpandedKey] = useState<string | null>(null);
@@ -174,17 +176,20 @@ const MonitorNetwork: FC<MonitorNetworkProps> = ({
         <div className={styles.toolbarRow}>
           <div className={styles.statsRow}>
             <span className={styles.statItem}>
-              Showing {filteredEvents.length} / {allNetworkEvents.length}
+              {t("network.showing", {
+                shown: filteredEvents.length,
+                total: allNetworkEvents.length,
+              })}
             </span>
             {errorCount > 0 && (
               <span className={`${styles.statItem} ${styles.statError}`}>
-                {errorCount} Issues
+                {t("network.issues", { count: errorCount })}
               </span>
             )}
           </div>
           <Input
             className={styles.filterInput}
-            placeholder="Enter network request URL"
+            placeholder={t("network.filterPlaceholder")}
             value={filterText}
             onChange={(e) => setFilterText(e.target.value)}
             allowClear
@@ -196,12 +201,12 @@ const MonitorNetwork: FC<MonitorNetworkProps> = ({
       <div className={styles.tableHeader}>
         <span className={styles.colArrow} />
         <span className={styles.colIndex}>#</span>
-        <span className={styles.colStatus}>Status</span>
-        <span className={styles.colMethod}>Method</span>
-        <span className={styles.colUrl}>URL</span>
-        <span className={styles.colCurl}>cURL</span>
+        <span className={styles.colStatus}>{t("network.colStatus")}</span>
+        <span className={styles.colMethod}>{t("network.colMethod")}</span>
+        <span className={styles.colUrl}>{t("network.colUrl")}</span>
+        <span className={styles.colCurl}>{t("network.colCurl")}</span>
         <span className={styles.colTimeline}>
-          Timeline
+          {t("network.colTimeline")}
           <span className={styles.timelineScale}>
             {totalTime > 0 && (
               <>
@@ -230,7 +235,7 @@ const MonitorNetwork: FC<MonitorNetworkProps> = ({
         style={{ height: observeRect.height - 100 }}
       >
         {filteredEvents.length === 0 ? (
-          <div className={styles.empty}>No network requests</div>
+          <div className={styles.empty}>{t("network.empty")}</div>
         ) : (
           filteredEvents.map((item: any, i: number) => {
             const payload = item.data.payload;

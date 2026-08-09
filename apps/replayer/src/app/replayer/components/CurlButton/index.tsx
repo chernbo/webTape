@@ -3,6 +3,7 @@
 import { FC, MouseEvent } from "react";
 import { App, Button } from "antd";
 import styles from "./index.module.css";
+import { useI18n } from "../../../i18n";
 
 interface NetworkPayload {
   method?: string;
@@ -92,15 +93,16 @@ const CurlIcon = () => (
 
 const CurlButton: FC<CurlButtonProps> = ({ payload, className }) => {
   const { message } = App.useApp();
+  const { t } = useI18n();
 
   const handleClick = async (e: MouseEvent) => {
     e.stopPropagation();
     try {
       const curl = buildCurlCommand(payload);
       await copyToClipboard(curl);
-      message.success("curl 复制成功");
+      message.success(t("curl.copySuccess"));
     } catch {
-      message.error("curl 复制失败");
+      message.error(t("curl.copyFailed"));
     }
   };
 
@@ -109,7 +111,7 @@ const CurlButton: FC<CurlButtonProps> = ({ payload, className }) => {
       type="link"
       size="small"
       className={`${styles.curlBtn} ${className || ""}`}
-      title="Copy as cURL"
+      title={t("curl.copyTitle")}
       onClick={handleClick}
       icon={<CurlIcon />}
     >
