@@ -24,7 +24,9 @@ RUN apk add --no-cache libc6-compat openssl \
 FROM base AS deps
 
 # 只拷依赖清单, 保证 node_modules 层可缓存
-COPY package.json pnpm-lock.yaml pnpm-workspace.yaml .npmrc ./
+# 注册表已由上方 env (NPM_CONFIG_REGISTRY / COREPACK_NPM_REGISTRY) 指定, 无需 .npmrc
+# Registry is set via env above, so no .npmrc is needed here.
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 
 # packageManager 字段驱动 corepack 装出 lockfile 匹配的 pnpm 版本
 RUN corepack prepare --activate \
