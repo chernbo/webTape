@@ -98,6 +98,9 @@ services:
 
   replayer:
     image: ${REPLAYER_IMAGE:-ghcr.io/chernbo/webtape-replayer:latest}
+    # 镜像仅发布 amd64；显式指定平台，让 Apple Silicon 等 arm64 主机也能拉取(经 Rosetta/QEMU 运行)
+    # Image is published for amd64 only; pin the platform so arm64 hosts (e.g. Apple Silicon) can pull & run it via emulation.
+    platform: linux/amd64
     restart: unless-stopped
     depends_on:
       mysql:
