@@ -82,4 +82,4 @@ pnpm install
 
 ## 📄 许可
 
-[MIT](./LICENSE) · 基于 [rrweb](https://github.com/rrweb-io/rrweb) 构建。
+[MIT](./LICENSE) · 基于 [rrweb](https://github.com/rrweb-io/rrweb) ❤️ 构建，特别感谢 rrweb 团队。

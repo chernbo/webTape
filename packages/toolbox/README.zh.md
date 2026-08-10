@@ -78,4 +78,4 @@ npm 入口**无副作用**——不调用就什么都不会跑。
 
 ## 📄 许可
 
-MIT · 基于 [rrweb](https://github.com/rrweb-io/rrweb) 构建。
+MIT · 基于 [rrweb](https://github.com/rrweb-io/rrweb) ❤️ 构建，特别感谢 rrweb 团队。

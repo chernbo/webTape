@@ -83,4 +83,4 @@ pnpm install
 
 ## 📄 License
 
-[MIT](./LICENSE) · Built on [rrweb](https://github.com/rrweb-io/rrweb).
+[MIT](./LICENSE) · Made with ❤️ on top of [rrweb](https://github.com/rrweb-io/rrweb) — huge thanks to the rrweb team.

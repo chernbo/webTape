@@ -78,4 +78,4 @@ State machine: `finished → startRecord → recording → stopRecord → upload
 
 ## 📄 License
 
-MIT · Built on [rrweb](https://github.com/rrweb-io/rrweb).
+MIT · Made with ❤️ on top of [rrweb](https://github.com/rrweb-io/rrweb) — huge thanks to the rrweb team.
