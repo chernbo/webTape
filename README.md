@@ -15,15 +15,32 @@ English · [简体中文](./README.zh.md)
 
 <br/>
 
+<b>📼 Capture side · SDK (@webtapejs/toolbox)</b>
+
 <table>
   <tr>
     <td width="50%" align="center">
-      <img src="./assets/record.gif" alt="Record and pin annotations on the replay" width="100%" />
-      <br/><sub><b>Record & pin annotations</b></sub>
+      <img src="./assets/recent.gif" alt="Upload the recent background recording in one click" width="100%" />
+      <br/><sub><b>Recent recording · one-click backtrack</b></sub>
     </td>
     <td width="50%" align="center">
-      <img src="./assets/ai-analyze.gif" alt="Timeline replay and AI analysis" width="100%" />
-      <br/><sub><b>Replay timeline & AI analysis</b></sub>
+      <img src="./assets/sentinel.gif" alt="Sentinel mode auto-prompts a report on API errors" width="100%" />
+      <br/><sub><b>Sentinel mode · auto error prompt</b></sub>
+    </td>
+  </tr>
+</table>
+
+<b>▶️ Replay side · self-hosted platform</b>
+
+<table>
+  <tr>
+    <td width="50%" align="center">
+      <img src="./assets/record.gif" alt="Pin annotations on the replay" width="100%" />
+      <br/><sub><b>Pin annotations on the replay</b></sub>
+    </td>
+    <td width="50%" align="center">
+      <img src="./assets/ai-analyze.gif" alt="AI summary analysis" width="100%" />
+      <br/><sub><b>AI summary analysis</b></sub>
     </td>
   </tr>
 </table>
@@ -41,43 +58,38 @@ English · [简体中文](./README.zh.md)
 - 🌓 **Theming & i18n** — light / dark theme and English / 中文, switchable at runtime.
 - 🧩 **Zero business changes** — drop in a single `import` or `<script>`; the SDK is fully isolated.
 
-## 📦 Install
+## 🚀 Getting started
+
+### 1. Start the replay service
+
+Recordings are uploaded to and replayed on a **self-hosted replay service**. With Docker installed, one command brings it up (random password, no manual `.env`):
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/chernbo/webTape/main/deploy/install.sh | bash
+```
+
+Then open **http://localhost:3100** — it ships with a **built-in demo page you can try right away** (record → get a shareable replay link). Your upload endpoint (the SDK's `serverUrl`) is `http://localhost:3100/api/replayer`.
+
+> The upload endpoint is unauthenticated by design — Web Tape rides inside a host app rather than being a standalone service. Add auth at your gateway if you expose it publicly.
+
+### 2. Add the SDK to your own app (optional)
+
+To **record another front-end app**, inject the capture SDK into it via **npm** or a **`<script>`** tag, and point `serverUrl` at the service from step 1:
 
 ```bash
 npm install @webtapejs/toolbox
-# or: pnpm add @webtapejs/toolbox / yarn add @webtapejs/toolbox
+# or via CDN, no build step:
+# <script src="https://unpkg.com/@webtapejs/toolbox/dist/web-tape.iife.js"></script>
 ```
-
-Or load it via CDN — no build step:
-
-```html
-<script src="https://unpkg.com/@webtapejs/toolbox/dist/web-tape.iife.js"></script>
-```
-
-## 🔨 Usage
 
 ```ts
 import { configure, mountFab } from '@webtapejs/toolbox'
 
-configure({
-  serverUrl: 'https://your-replayer.example.com/api/replayer', // your replay service (see below)
-  autoBackgroundRecord: true,
-  errorPrompt: true,   // Sentinel mode
-  locale: 'en',        // injected UI language: 'en' (default) | 'zh'
-})
-
-mountFab() // optional: mount the built-in floating record button
+configure({ serverUrl: 'http://localhost:3100/api/replayer', errorPrompt: true, locale: 'en' })
+mountFab() // optional built-in floating button; or drive recording via the Core API
 ```
 
-> Replay & upload need a **replay service**. Self-host it in one command (Docker required):
->
-> ```bash
-> curl -fsSL https://raw.githubusercontent.com/chernbo/webTape/main/deploy/install.sh | bash
-> ```
->
-> This brings up MySQL + the replayer on `http://localhost:3100`; use `http://localhost:3100/api/replayer` as your `serverUrl`. The upload endpoint is unauthenticated by design (Web Tape rides inside a host app rather than being a standalone service) — add auth at your gateway if exposing it publicly.
-
-Full API, configuration and guides live in the **[documentation site](https://webtape.chenb.xyz/)**.
+Full API, configuration and integration guides live in the **[documentation site](https://webtape.chenb.xyz/)**.
 
 ## 🔗 Links
 

@@ -14,15 +14,32 @@
 
 <br/>
 
+<b>📼 录制端 · SDK（@webtapejs/toolbox）</b>
+
 <table>
   <tr>
     <td width="50%" align="center">
-      <img src="./assets/record.gif" alt="录制与定位批注" width="100%" />
-      <br/><sub><b>录制 · 定位批注</b></sub>
+      <img src="./assets/recent.gif" alt="一键上报最近的后台录制" width="100%" />
+      <br/><sub><b>最近录制 · 一键回溯</b></sub>
     </td>
     <td width="50%" align="center">
-      <img src="./assets/ai-analyze.gif" alt="时间轴回放与 AI 分析" width="100%" />
-      <br/><sub><b>时间轴回放 · AI 分析</b></sub>
+      <img src="./assets/sentinel.gif" alt="哨兵模式：接口异常自动提示上报" width="100%" />
+      <br/><sub><b>哨兵模式 · 异常自动提示</b></sub>
+    </td>
+  </tr>
+</table>
+
+<b>▶️ 回放端 · 自建平台</b>
+
+<table>
+  <tr>
+    <td width="50%" align="center">
+      <img src="./assets/record.gif" alt="回放页定位批注" width="100%" />
+      <br/><sub><b>回放定位批注</b></sub>
+    </td>
+    <td width="50%" align="center">
+      <img src="./assets/ai-analyze.gif" alt="AI 总结分析" width="100%" />
+      <br/><sub><b>AI 总结分析</b></sub>
     </td>
   </tr>
 </table>
@@ -40,43 +57,38 @@
 - 🌓 **主题与多语言** —— 明暗主题、中英文，运行时可切换。
 - 🧩 **零业务侵入** —— 一次 `import` 或一行 `<script>` 即可接入，SDK 完全隔离。
 
-## 📦 安装
+## 🚀 快速开始
+
+### 1. 启动回放服务
+
+录制数据会上传到、并在一个**自建的回放服务**上回放。装了 Docker 后，一行命令拉起（随机密码，无需手写 `.env`）：
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/chernbo/webTape/main/deploy/install.sh | bash
+```
+
+然后打开 **http://localhost:3100** —— 它**自带一个体验页，可直接上手体验**（录制 → 生成可分享的回放链接）。上传地址（即 SDK 的 `serverUrl`）为 `http://localhost:3100/api/replayer`。
+
+> 上传接口默认不鉴权 —— Web Tape 是寄生在宿主应用内运行的伴随工具，而非独立服务；若需公网暴露，请在网关层自行加鉴权。
+
+### 2. 接入到你自己的应用（可选）
+
+当你需要**录制另一个前端应用**时，把采集 SDK 通过 **npm** 或一行 **`<script>`** 寄生注入进去，并把 `serverUrl` 指向第 1 步的服务：
 
 ```bash
 npm install @webtapejs/toolbox
-# 或：pnpm add @webtapejs/toolbox / yarn add @webtapejs/toolbox
+# 或通过 CDN，无需构建：
+# <script src="https://unpkg.com/@webtapejs/toolbox/dist/web-tape.iife.js"></script>
 ```
-
-也可通过 CDN 引入，无需构建：
-
-```html
-<script src="https://unpkg.com/@webtapejs/toolbox/dist/web-tape.iife.js"></script>
-```
-
-## 🔨 使用
 
 ```ts
 import { configure, mountFab } from '@webtapejs/toolbox'
 
-configure({
-  serverUrl: 'https://your-replayer.example.com/api/replayer', // 你的回放服务（见下）
-  autoBackgroundRecord: true,
-  errorPrompt: true,   // 哨兵模式
-  locale: 'zh',        // 注入 UI 语言：'en'（默认）| 'zh'
-})
-
-mountFab() // 可选：挂载内置悬浮录制按钮
+configure({ serverUrl: 'http://localhost:3100/api/replayer', errorPrompt: true, locale: 'zh' })
+mountFab() // 可选：内置悬浮按钮；或用 Core API 自行控制录制
 ```
 
-> 录制上传与回放需要一个**回放服务**。装了 Docker 后一行命令自建：
->
-> ```bash
-> curl -fsSL https://raw.githubusercontent.com/chernbo/webTape/main/deploy/install.sh | bash
-> ```
->
-> 会拉起 MySQL + 回放服务在 `http://localhost:3100`，把 `http://localhost:3100/api/replayer` 作为 `serverUrl`。上传接口默认不鉴权（Web Tape 是寄生在宿主应用内运行的伴随工具，而非独立服务）——若需公网暴露请在网关层自行加鉴权。
-
-完整 API、配置与指南见 **[文档站](https://webtape.chenb.xyz/)**。
+完整 API、配置与接入指南见 **[文档站](https://webtape.chenb.xyz/)**。
 
 ## 🔗 链接
 
