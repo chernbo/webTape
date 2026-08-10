@@ -33,7 +33,7 @@ export async function POST(request: NextRequest) {
       {
         ok: false,
         error:
-          "AI 分析未配置: 请在 .env 设置 AI_WORKFLOW_API_URL 和 AI_WORKFLOW_API_KEY",
+          "AI analysis is not configured: set AI_WORKFLOW_API_URL and AI_WORKFLOW_API_KEY in .env",
       },
       { status: 501 },
     );
@@ -81,7 +81,7 @@ export async function POST(request: NextRequest) {
       data?.outputs?.result ??
       data?.outputs?.text ??
       data?.data?.outputs?.result ??
-      "（无返回内容）";
+      "(No content returned)";
 
     return NextResponse.json({ ok: true, result });
   } catch (err) {
