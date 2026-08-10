@@ -2,6 +2,8 @@
 
 The **capture side** of [Web Tape](https://github.com/chernbo/webTape) — a lightweight, [rrweb](https://github.com/rrweb-io/rrweb)-based browser recording SDK. One `import` or `<script>` records page interactions, network requests and console logs, with a background sliding window, one-click rewind and a sentinel mode for API errors.
 
+English · [简体中文](./README.zh.md)
+
 [![npm](https://img.shields.io/npm/v/@webtapejs/toolbox.svg)](https://www.npmjs.com/package/@webtapejs/toolbox)
 [![license](https://img.shields.io/badge/license-MIT-blue.svg)](../../LICENSE)
 
