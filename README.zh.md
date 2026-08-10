@@ -12,6 +12,21 @@
 
 [文档](https://webtape.chenb.xyz/) · [npm](https://www.npmjs.com/package/@webtapejs/toolbox)
 
+<br/>
+
+<table>
+  <tr>
+    <td width="50%" align="center">
+      <img src="./assets/record.gif" alt="录制与定位批注" width="100%" />
+      <br/><sub><b>录制 · 定位批注</b></sub>
+    </td>
+    <td width="50%" align="center">
+      <img src="./assets/ai-analyze.gif" alt="时间轴回放与 AI 分析" width="100%" />
+      <br/><sub><b>时间轴回放 · AI 分析</b></sub>
+    </td>
+  </tr>
+</table>
+
 </div>
 
 ---

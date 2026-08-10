@@ -13,6 +13,21 @@ English · [简体中文](./README.zh.md)
 
 [Documentation](https://webtape.chenb.xyz/) · [npm](https://www.npmjs.com/package/@webtapejs/toolbox)
 
+<br/>
+
+<table>
+  <tr>
+    <td width="50%" align="center">
+      <img src="./assets/record.gif" alt="Record and pin annotations on the replay" width="100%" />
+      <br/><sub><b>Record & pin annotations</b></sub>
+    </td>
+    <td width="50%" align="center">
+      <img src="./assets/ai-analyze.gif" alt="Timeline replay and AI analysis" width="100%" />
+      <br/><sub><b>Replay timeline & AI analysis</b></sub>
+    </td>
+  </tr>
+</table>
+
 </div>
 
 ---
