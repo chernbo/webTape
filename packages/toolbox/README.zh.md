@@ -73,7 +73,7 @@ npm 入口**无副作用**——不调用就什么都不会跑。
 
 ## 🔗 链接
 
-- 📖 文档：https://webtape.chenb.xyz *（建设中）*
+- 📖 文档：https://webtape.chenb.xyz/
 - 📺 项目与自建：[github.com/chernbo/webTape](https://github.com/chernbo/webTape)
 
 ## 📄 许可

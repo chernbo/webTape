@@ -11,7 +11,7 @@ English · [简体中文](./README.zh.md)
 [![npm](https://img.shields.io/npm/v/@webtapejs/toolbox.svg)](https://www.npmjs.com/package/@webtapejs/toolbox)
 [![license](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE)
 
-[Documentation](https://webtape.chenb.xyz) · [Live Demo](https://webtape.chenb.xyz) · [npm](https://www.npmjs.com/package/@webtapejs/toolbox)
+[Documentation](https://webtape.chenb.xyz/) · [npm](https://www.npmjs.com/package/@webtapejs/toolbox)
 
 </div>
 
@@ -62,12 +62,11 @@ mountFab() // optional: mount the built-in floating record button
 >
 > This brings up MySQL + the replayer on `http://localhost:3100`; use `http://localhost:3100/api/replayer` as your `serverUrl`. The upload endpoint is unauthenticated by design (Web Tape rides inside a host app rather than being a standalone service) — add auth at your gateway if exposing it publicly.
 
-Full API, configuration and guides live in the **[documentation site](https://webtape.chenb.xyz)**.
+Full API, configuration and guides live in the **[documentation site](https://webtape.chenb.xyz/)**.
 
 ## 🔗 Links
 
-- 📖 **Documentation**: https://webtape.chenb.xyz *(coming soon)*
-- 🎮 **Live demo**: https://webtape.chenb.xyz *(coming soon)*
+- 📖 **Documentation**: https://webtape.chenb.xyz/
 - 📦 **npm**: [`@webtapejs/toolbox`](https://www.npmjs.com/package/@webtapejs/toolbox)
 - 🧩 **SDK reference**: [`packages/toolbox`](./packages/toolbox#readme)
 

@@ -10,7 +10,7 @@
 [![npm](https://img.shields.io/npm/v/@webtapejs/toolbox.svg)](https://www.npmjs.com/package/@webtapejs/toolbox)
 [![license](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE)
 
-[文档](https://webtape.chenb.xyz) · [在线体验](https://webtape.chenb.xyz) · [npm](https://www.npmjs.com/package/@webtapejs/toolbox)
+[文档](https://webtape.chenb.xyz/) · [npm](https://www.npmjs.com/package/@webtapejs/toolbox)
 
 </div>
 
@@ -61,12 +61,11 @@ mountFab() // 可选：挂载内置悬浮录制按钮
 >
 > 会拉起 MySQL + 回放服务在 `http://localhost:3100`，把 `http://localhost:3100/api/replayer` 作为 `serverUrl`。上传接口默认不鉴权（Web Tape 是寄生在宿主应用内运行的伴随工具，而非独立服务）——若需公网暴露请在网关层自行加鉴权。
 
-完整 API、配置与指南见 **[文档站](https://webtape.chenb.xyz)**。
+完整 API、配置与指南见 **[文档站](https://webtape.chenb.xyz/)**。
 
 ## 🔗 链接
 
-- 📖 **文档**：https://webtape.chenb.xyz *（建设中）*
-- 🎮 **在线体验**：https://webtape.chenb.xyz *（建设中）*
+- 📖 **文档**：https://webtape.chenb.xyz/
 - 📦 **npm**：[`@webtapejs/toolbox`](https://www.npmjs.com/package/@webtapejs/toolbox)
 - 🧩 **SDK 说明**：[`packages/toolbox`](./packages/toolbox#readme)
 

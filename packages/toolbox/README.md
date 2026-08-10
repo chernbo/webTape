@@ -73,7 +73,7 @@ State machine: `finished → startRecord → recording → stopRecord → upload
 
 ## 🔗 Links
 
-- 📖 Documentation: https://webtape.chenb.xyz *(coming soon)*
+- 📖 Documentation: https://webtape.chenb.xyz/
 - 📺 Project & self-hosting: [github.com/chernbo/webTape](https://github.com/chernbo/webTape)
 
 ## 📄 License
