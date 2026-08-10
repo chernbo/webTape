@@ -7,7 +7,8 @@
  * 请求 body: { rrwebEvents: any[] }
  * 响应: { ok: true, data: { sourceId, url } }
  *
- * 不再依赖 MinIO / OSS, 一份 MySQL 全收
+ * 录制数据全部存 MySQL（无对象存储依赖）。
+ * All recording data is stored in MySQL (no object storage dependency).
  */
 
 import { NextRequest, NextResponse } from "next/server";
@@ -40,7 +41,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // 生成 32 位 hex sourceId (兼容老 OSS 链接格式)
+    // 生成 32 位 hex 作为录制唯一标识 / random 32-hex id as the recording id
     const sourceId = crypto.randomBytes(16).toString("hex");
     const eventsJson = JSON.stringify(events);
 

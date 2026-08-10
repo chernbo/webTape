@@ -390,18 +390,15 @@ async function uploadEvents(
       body: JSON.stringify(payload),
     }).then((res) => res.json())
 
-    // 新版后端: { ok: true, data: { sourceId, url } } —— url 已经是绝对路径
+    // 后端响应 / backend response: { ok: true, data: { sourceId, url } } —— url 已是绝对路径 / url is already absolute
     if (resp?.data?.sourceId) {
       const sourceId = resp.data.sourceId as string
       const url = (resp.data.url as string) || sourceId
       return { sourceId, url }
     }
 
-    // 旧版后端兼容: { data: { dstFileName: "xxx.json" } }, url 用 sourceId 兜底
-    const dstFileName: string = resp?.data?.dstFileName ?? ''
-    const sourceId = dstFileName.replace(/\.[^.]+$/, '')
-    if (!sourceId) return false
-    return { sourceId, url: sourceId }
+    // 未拿到 sourceId 视为失败 / no sourceId means failure
+    return false
   } catch (e) {
     return false
   }
