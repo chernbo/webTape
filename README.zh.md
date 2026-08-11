@@ -67,6 +67,31 @@
 curl -fsSL https://raw.githubusercontent.com/chernbo/webTape/main/deploy/install.sh | bash
 ```
 
+<details>
+<summary><b>可以分步执行</b>（先下载查看脚本，再管理服务）</summary>
+
+```bash
+# 1. 下载安装脚本（运行前可先阅读内容）
+curl -fsSL https://raw.githubusercontent.com/chernbo/webTape/main/deploy/install.sh -o install.sh
+
+# 2. 运行 —— 生成 .env（随机密码）+ docker-compose.yml，并启动服务
+bash install.sh
+#   自定义端口：      WEBTAPE_PORT=8080 bash install.sh
+#   只生成不启动：    WEBTAPE_NO_START=1 bash install.sh
+
+# 3. 管理服务（在生成的 ./webtape 目录内）
+cd webtape
+docker compose ps                              # 查看状态
+docker compose logs -f replayer                # 跟踪日志
+docker compose pull && docker compose up -d    # 更新到最新镜像
+docker compose down                            # 停止
+docker compose down -v                         # 停止并清空 MySQL 数据卷（重置数据与密码）
+```
+
+> 遇到 MySQL `P1000 认证失败`？多半是上次运行残留的 `webtape_mysql-data` 卷里是旧密码。执行 `docker compose down -v` 再 `docker compose up -d` 重新初始化即可。
+
+</details>
+
 然后打开 **http://localhost:3100** —— 它**自带一个体验页，可直接上手体验**（录制 → 生成可分享的回放链接）。上传地址（即 SDK 的 `serverUrl`）为 `http://localhost:3100/api/replayer`。
 
 > 上传接口默认不鉴权 —— Web Tape 是寄生在宿主应用内运行的伴随工具，而非独立服务；若需公网暴露，请在网关层自行加鉴权。

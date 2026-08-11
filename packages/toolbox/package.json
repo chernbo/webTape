@@ -1,7 +1,7 @@
 {
   "name": "@webtapejs/toolbox",
   "version": "0.1.4",
-  "description": "一行 <script> 或一次 import 即可接入的页面会话录制 SDK：后台滑动窗口录制、最近 N 秒一键回溯、哨兵模式自动捕获接口异常，基于 rrweb。",
+  "description": "Web Tape: A web-based black box with sentinel mode, auto-reporting, annotation and AI analysis.",
   "type": "module",
   "license": "MIT",
   "author": "chenrbo",

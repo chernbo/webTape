@@ -68,6 +68,31 @@ Recordings are uploaded to and replayed on a **self-hosted replay service**. Wit
 curl -fsSL https://raw.githubusercontent.com/chernbo/webTape/main/deploy/install.sh | bash
 ```
 
+<details>
+<summary><b>Step by step</b> (download & inspect the script, then manage the stack)</summary>
+
+```bash
+# 1. Download the installer (read it before running if you like)
+curl -fsSL https://raw.githubusercontent.com/chernbo/webTape/main/deploy/install.sh -o install.sh
+
+# 2. Run it — generates .env (random password) + docker-compose.yml, then starts the stack
+bash install.sh
+#   custom port:            WEBTAPE_PORT=8080 bash install.sh
+#   only generate, no start: WEBTAPE_NO_START=1 bash install.sh
+
+# 3. Manage the stack (inside the generated ./webtape dir)
+cd webtape
+docker compose ps                              # status
+docker compose logs -f replayer                # follow logs
+docker compose pull && docker compose up -d    # update to the latest image
+docker compose down                            # stop
+docker compose down -v                         # stop + wipe MySQL volume (reset data & credentials)
+```
+
+> Seeing a MySQL `P1000 authentication failed`? A stale `webtape_mysql-data` volume from a previous run has an old password. Run `docker compose down -v` then `docker compose up -d` to re-initialize.
+
+</details>
+
 Then open **http://localhost:3100** — it ships with a **built-in demo page you can try right away** (record → get a shareable replay link). Your upload endpoint (the SDK's `serverUrl`) is `http://localhost:3100/api/replayer`.
 
 > The upload endpoint is unauthenticated by design — Web Tape rides inside a host app rather than being a standalone service. Add auth at your gateway if you expose it publicly.
