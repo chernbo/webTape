@@ -57,4 +57,6 @@ RUN corepack prepare --activate
 
 EXPOSE 3000
 
-CMD ["pnpm", "start", "--", "-H", "0.0.0.0", "-p", "3000"]
+# host/port 已写进 package.json 的 start 脚本；避免 `pnpm start -- ...` 把 `--` 透传给 next
+# host/port live in the package.json "start" script, avoiding pnpm forwarding `--` to next
+CMD ["pnpm", "start"]
