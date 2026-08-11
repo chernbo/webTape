@@ -1,6 +1,6 @@
 {
   "name": "@webtapejs/toolbox",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Web Tape: A web-based black box with sentinel mode, auto-reporting, annotation and AI analysis.",
   "type": "module",
   "license": "MIT",
