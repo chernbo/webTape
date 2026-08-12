@@ -76,7 +76,7 @@ fi
 cat > docker-compose.yml <<'YAML'
 services:
   mysql:
-    image: mysql:8.4
+    image: mysql:8.0
     restart: unless-stopped
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
