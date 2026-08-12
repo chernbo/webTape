@@ -114,7 +114,7 @@ services:
       - '${WEBTAPE_PORT:-3100}:3000'
     # Create tables from schema on start, then launch Next.js
     command: >
-      sh -c "pnpm prisma db push && pnpm exec next start --hostname 0.0.0.0 --port 3000"
+      sh -c "pnpm prisma db push && node node_modules/next/dist/bin/next start --hostname 0.0.0.0 --port 3000"
 
 volumes:
   mysql-data:
